@@ -21,6 +21,8 @@ public class Main {
 	private final static Double _dtimeDefaultValue = 2500.0;
 	private final static String _forceLawsDefaultValue = "nlug";
 	private final static String _stateComparatorDefaultValue = "epseq";
+	private final static String _outputDefaultValue = "the standard output";
+	private final static int _stepsDefaultValue = 150;
 
 	// some attributes to stores values corresponding to command-line parameters
 	//
@@ -28,6 +30,7 @@ public class Main {
 	private static String _inFile = null;
 	private static JSONObject _forceLawsInfo = null;
 	private static JSONObject _stateComparatorInfo = null;
+	private static String _outFile = null;
 
 	// factories
 	private static Factory<Body> _bodyFactory;
@@ -57,7 +60,9 @@ public class Main {
 			parseHelpOption(line, cmdLineOptions);
 			parseInFileOption(line);
 			// TODO add support of -o, -eo, and -s (define corresponding parse methods)
-
+			parseOutputFileOption(line);
+			parseExpectedOutputOption(line);
+			parseStepsOption(line);
 			parseDeltaTimeOption(line);
 			parseForceLawsOption(line);
 			parseStateComparatorOption(line);
@@ -72,12 +77,29 @@ public class Main {
 					error += (" " + o);
 				throw new ParseException(error);
 			}
-
+			
+			init();
+			
 		} catch (ParseException e) {
 			System.err.println(e.getLocalizedMessage());
 			System.exit(1);
 		}
 
+	}
+
+	private static void parseStepsOption(CommandLine line) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void parseExpectedOutputOption(CommandLine line) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void parseOutputFileOption(CommandLine line) {
+		// TODO Auto-generated method stub
+		_outFile = line.getOptionValue("o");
 	}
 
 	private static Options buildOptions() {
@@ -91,7 +113,24 @@ public class Main {
 
 		// TODO add support for -o, -eo, and -s (add corresponding information to
 		// cmdLineOptions)
-
+		
+		// output file
+		cmdLineOptions.addOption(Option.builder("o").longOpt("output").hasArg()
+				.desc("Output file, where output is written. Default value: "
+						+ _outputDefaultValue + ".")
+				.build());
+		
+		// expected output file
+		cmdLineOptions.addOption(Option.builder("eo").longOpt("expected-output").hasArg()
+				.desc("The expected output file. If not provided no comparison is applied")
+				.build());
+		
+		// steps
+		cmdLineOptions.addOption(Option.builder("s").longOpt("steps").hasArg()
+				.desc("An integer representing the number of simulation steps. Default value: "
+						+ _stepsDefaultValue + ".")
+				.build());
+				
 		// delta-time
 		cmdLineOptions.addOption(Option.builder("dt").longOpt("delta-time").hasArg()
 				.desc("A double representing actual time, in seconds, per simulation step. Default value: "
