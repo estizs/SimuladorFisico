@@ -6,12 +6,12 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/segundo/segundo cuatri/tp II/workspace/PhysicsSimulator/lib/commons-cli-1.4.jar">
+	<classpathentry kind="lib" path="C:/Users/elena/TPII/SimuladorFisico/lib/json.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/segundo/segundo cuatri/tp II/workspace/PhysicsSimulator/lib/json.jar">
+	<classpathentry kind="lib" path="C:/Users/elena/TPII/SimuladorFisico/lib/commons-cli-1.4.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
