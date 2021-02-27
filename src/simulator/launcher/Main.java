@@ -1,5 +1,7 @@
 package simulator.launcher;
 
+import java.util.ArrayList;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -11,8 +13,18 @@ import org.json.JSONObject;
 
 import simulator.control.StateComparator;
 import simulator.factories.Factory;
+import simulator.factories.MassEqualStatesBuilder;
+import simulator.factories.MassLosingBodyBuilder;
+import simulator.factories.MovingTowardsFixedPointBuilder;
+import simulator.factories.NewtonUniversalGravitationBuilder;
+import simulator.factories.NoForceBuilder;
+import simulator.factories.BasicBodyBuilder;
+import simulator.factories.Builder;
+import simulator.factories.BuilderBasedFactory;
+import simulator.factories.EpsilonEqualStatesBuilder;
 import simulator.model.Body;
 import simulator.model.ForceLaws;
+import simulator.model.PhysicsSimulator;
 
 public class Main {
 
@@ -22,15 +34,17 @@ public class Main {
 	private final static String _forceLawsDefaultValue = "nlug";
 	private final static String _stateComparatorDefaultValue = "epseq";
 	private final static String _outputDefaultValue = "the standard output";
-	private final static int _stepsDefaultValue = 150;
+	private final static Integer _stepsDefaultValue = 150;
 
 	// some attributes to stores values corresponding to command-line parameters
 	//
 	private static Double _dtime = null;
+	private static Integer _steps = null;
 	private static String _inFile = null;
 	private static JSONObject _forceLawsInfo = null;
 	private static JSONObject _stateComparatorInfo = null;
 	private static String _outFile = null;
+	private static String _expectedOutFile = null;
 
 	// factories
 	private static Factory<Body> _bodyFactory;
@@ -38,11 +52,24 @@ public class Main {
 	private static Factory<StateComparator> _stateComparatorFactory;
 
 	private static void init() {
-		// TODO initialize the bodies factory
-
-		// TODO initialize the force laws factory
-
-		// TODO initialize the state comparator
+		// Initialize the bodies factory
+		ArrayList<Builder<Body>> bodyBuilders = new ArrayList<>();
+		bodyBuilders.add(new BasicBodyBuilder());
+		bodyBuilders.add(new MassLosingBodyBuilder());
+		_bodyFactory = new BuilderBasedFactory<Body>(bodyBuilders);
+		
+		// Initialize the farce laws factory
+		ArrayList<Builder<ForceLaws>> forceLawsBuilders = new ArrayList<>();
+		forceLawsBuilders.add(new NewtonUniversalGravitationBuilder());
+		forceLawsBuilders.add(new MovingTowardsFixedPointBuilder());
+		forceLawsBuilders.add(new NoForceBuilder());
+		_forceLawsFactory = new BuilderBasedFactory<ForceLaws>(forceLawsBuilders);
+		
+		// Initialize the state comparator
+		ArrayList<Builder<StateComparator>> stateComparatorBuilders = new ArrayList<>();
+		stateComparatorBuilders.add(new MassEqualStatesBuilder());
+		stateComparatorBuilders.add(new EpsilonEqualStatesBuilder());
+		_stateComparatorFactory = new BuilderBasedFactory<StateComparator>(stateComparatorBuilders);
 	}
 
 	private static void parseArgs(String[] args) {
@@ -77,9 +104,6 @@ public class Main {
 					error += (" " + o);
 				throw new ParseException(error);
 			}
-			
-			init();
-			
 		} catch (ParseException e) {
 			System.err.println(e.getLocalizedMessage());
 			System.exit(1);
@@ -87,18 +111,21 @@ public class Main {
 
 	}
 
-	private static void parseStepsOption(CommandLine line) {
-		// TODO Auto-generated method stub
-		
+	private static void parseStepsOption(CommandLine line) throws ParseException{
+		String s = line.getOptionValue("s", _stepsDefaultValue.toString());
+		try {
+			_steps = Integer.parseInt(s);
+			assert (_steps > 0);
+		} catch (Exception e) {
+			throw new ParseException("Invalid steps value: " + s);
+		}
 	}
 
 	private static void parseExpectedOutputOption(CommandLine line) {
-		// TODO Auto-generated method stub
-		
+		_expectedOutFile = line.getOptionValue("eo");
 	}
 
 	private static void parseOutputFileOption(CommandLine line) {
-		// TODO Auto-generated method stub
 		_outFile = line.getOptionValue("o");
 	}
 
@@ -110,9 +137,6 @@ public class Main {
 
 		// input file
 		cmdLineOptions.addOption(Option.builder("i").longOpt("input").hasArg().desc("Bodies JSON input file.").build());
-
-		// TODO add support for -o, -eo, and -s (add corresponding information to
-		// cmdLineOptions)
 		
 		// output file
 		cmdLineOptions.addOption(Option.builder("o").longOpt("output").hasArg()
@@ -251,7 +275,17 @@ public class Main {
 	}
 
 	private static void startBatchMode() throws Exception {
-		// TODO complete this method
+		// Crear el simulador (PhysicsSimulator) --> hay que pasar por argumentos las fl y el dt
+		// PhysicsSimulator simulator = new PhysicsSimulator(_dtime, _forceLawsInfo);
+		// Ficheros de entrada y salida (i, o, eo) --> hay que comprobar si el o ha dao null
+		
+		// Comparador de estados de acuerdo con la info del cmp
+		
+		// Controller --> hay que pasar por parámetros el simulador y la factoria de cuerpos
+		
+		// Metodo loadBodies() del controller
+		
+		// Llamar al run() del controller
 	}
 
 	private static void start(String[] args) throws Exception {
@@ -264,7 +298,7 @@ public class Main {
 			init();
 			start(args);
 		} catch (Exception e) {
-			System.err.println("Something went wrong ...");
+			System.err.println("Something went wrong ... :c");
 			System.err.println();
 			e.printStackTrace();
 		}
