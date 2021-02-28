@@ -11,6 +11,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.json.JSONObject;
 
+import simulator.control.EpsilonEqualStates;
+import simulator.control.MassEqualStates;
 import simulator.control.StateComparator;
 import simulator.factories.Factory;
 import simulator.factories.MassEqualStatesBuilder;
@@ -280,8 +282,14 @@ public class Main {
 		// Ficheros de entrada y salida (i, o, eo) --> hay que comprobar si el o ha dao null
 		
 		// Comparador de estados de acuerdo con la info del cmp
+		StateComparator sc;
+		if(_stateComparatorInfo.has("epseq"))
+			sc = new EpsilonEqualStates(_stateComparatorInfo.getDouble("eps"));
+		else 
+			sc = new MassEqualStates();
 		
 		// Controller --> hay que pasar por parámetros el simulador y la factoria de cuerpos
+		
 		
 		// Metodo loadBodies() del controller
 		

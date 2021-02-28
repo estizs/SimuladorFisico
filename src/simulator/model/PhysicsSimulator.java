@@ -10,7 +10,7 @@ public class PhysicsSimulator {
 	private List<Body> bodies;
 	private Double time;
 	
-	public PhysicsSimulator(Double dt, ForceLaws fl) throws IllegalArgumentException { 
+	public PhysicsSimulator(Double dt, ForceLaws fl) { 
 		this.dt = dt;
 		this.fl = fl;
 		time = 0.0;
