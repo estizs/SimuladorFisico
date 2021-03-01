@@ -2,8 +2,9 @@
 
 ## Aquí los cambios que se van realizando a lo largo del desarrollo de dicha práctica
 
-**28/02/2021** Creadas y terminadas las clases que implementan el StateComparator: MassEqualStates y EpsilonEqualStates. Creada la clase Controller, implementado el constructor y el método loadBodies.
+**01/03/2021** Terminado el PhysicsSimulator. Terminada la clase Body.java y MassLosingBody.java que hereda de esta. 
 
+**28/02/2021** Creadas y terminadas las clases que implementan el StateComparator: MassEqualStates y EpsilonEqualStates. Creada la clase Controller, implementado el constructor y el método loadBodies.
 
 **27/02/2021.** Terminados los parse de los comandos anteriores. Finalizado método init del Main.java. Comienzo del método startBatchMode en Main.java. Creados todos los builders y la clase PhysicsSimulator.
 
