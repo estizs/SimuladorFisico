@@ -1,5 +1,8 @@
 package simulator.launcher;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 import org.apache.commons.cli.CommandLine;
@@ -11,6 +14,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.json.JSONObject;
 
+import simulator.control.Controller;
 import simulator.control.EpsilonEqualStates;
 import simulator.control.MassEqualStates;
 import simulator.control.StateComparator;
@@ -277,9 +281,20 @@ public class Main {
 	}
 
 	private static void startBatchMode() throws Exception {
-		// Crear el simulador (PhysicsSimulator) --> hay que pasar por argumentos las fl y el dt
-		// PhysicsSimulator simulator = new PhysicsSimulator(_dtime, _forceLawsInfo);
-		// Ficheros de entrada y salida (i, o, eo) --> hay que comprobar si el o ha dao null
+		// Crear el simulador (PhysicsSimulator) --> hay que pasar por argumentos la fl y el dt
+		PhysicsSimulator simulator = new PhysicsSimulator(_dtime, _forceLawsFactory.createInstance(_forceLawsInfo));
+		
+		// Ficheros de entrada y salida (i, o, eo) --> hay que comprobar si el o ha dado null
+		if(_outFile != null) {
+			// Archivo en _outFile
+		}
+		else {
+			// Consola
+		}
+		PrintStream p = new PrintStream(_outFile);
+		p.println("{");
+		p.println("\"states\": [");
+		
 		
 		// Comparador de estados de acuerdo con la info del cmp
 		StateComparator sc;
@@ -289,11 +304,17 @@ public class Main {
 			sc = new MassEqualStates();
 		
 		// Controller --> hay que pasar por parámetros el simulador y la factoria de cuerpos
-		
+		Controller c = new Controller(simulator, _bodyFactory);
 		
 		// Metodo loadBodies() del controller
+		InputStream i = new ByteArrayInputStream(_inFile.getBytes());
+		c.loadBodies(i);
 		
 		// Llamar al run() del controller
+		// run the simulation n steps
+		c.run(_steps, p, i, sc);
+		p.println("]");
+		p.println("}");
 	}
 
 	private static void start(String[] args) throws Exception {
