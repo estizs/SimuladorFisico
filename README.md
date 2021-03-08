@@ -2,6 +2,8 @@
 
 ## Aquí los cambios que se van realizando a lo largo del desarrollo de dicha práctica
 
+**08/03/2021** Terminado la clase Controller y las clases NewtonUniversalGravitation, MovingTowardsFixedPoint y NoForce. Hemos empezado con las factorías y los builders pero teníamos dudas y le hemos preguntado a Puri <3. Además mañana es mi cumple.
+
 **01/03/2021** Terminado el PhysicsSimulator. Terminada la clase Body.java y MassLosingBody.java que hereda de esta. 
 
 **28/02/2021** Creadas y terminadas las clases que implementan el StateComparator: MassEqualStates y EpsilonEqualStates. Creada la clase Controller, implementado el constructor y el método loadBodies.
