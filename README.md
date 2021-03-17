@@ -2,6 +2,12 @@
 
 ## Aquí los cambios que se van realizando a lo largo del desarrollo de dicha práctica
 
+**Dudas para Puri** - ¿Qué comprobaciones hay que hacer a la hora de leer JSONs? - ¿Tenemos que comprobar si los tipos están bien o solo si están las keys?
+
+**17/03/2021** Terminados todos los builders.
+
+**16/03/2021** Modificadas y terminadas las clases Body y sus hijas, las ForceLaws y sus hijas y los StateComparators, tanto MassEqualStates como EpsilonEqualStates.
+
 **08/03/2021** Terminado la clase Controller y las clases NewtonUniversalGravitation, MovingTowardsFixedPoint y NoForce. Hemos empezado con las factorías y los builders pero teníamos dudas y le hemos preguntado a Puri <3. Además mañana es mi cumple.
 
 **01/03/2021** Terminado el PhysicsSimulator. Terminada la clase Body.java y MassLosingBody.java que hereda de esta. 
