@@ -10,12 +10,11 @@ public class MassEqualStates implements StateComparator{
 		// Valor de sus claves "time" son distintas entonces falso
 		if (s1.getDouble("time") != s2.getDouble("time")) return false;
 		
-		// Para todo i, el i-ésimo cuerpo de la lista tienen el mismo valor en las claves "id" y "mass"
 		JSONArray bodies1 = s1.getJSONArray("bodies");
 		JSONArray bodies2 = s2.getJSONArray("bodies");
 		if (bodies1.length() != bodies2.length()) return false;
 		
-		// 
+		// Para todo i, el i-ésimo cuerpo de la lista tienen el mismo valor en las claves "id" y "mass"
 		for (int i = 0; i < bodies1.length(); i++) {
 			JSONObject o1 = bodies1.getJSONObject(i);
 			JSONObject o2 = bodies2.getJSONObject(i);
