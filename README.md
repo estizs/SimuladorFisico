@@ -2,7 +2,7 @@
 
 ## Aquí los cambios que se van realizando a lo largo del desarrollo de dicha práctica
 
-**22/03/2021** Terminadas las clases Main, Controller y PhysicsSimulator.
+**22/03/2021** Terminadas las clases Main, Controller y PhysicsSimulator. Aniversario de un mes con la mejor práctica que nos han dado en la carrera aunque Elena diga que no. Yo sigo pensando que no estoy en el grado de videojuegos.
 
 **Dudas para Puri** - ¿Qué comprobaciones hay que hacer a la hora de leer JSONs? - ¿Tenemos que comprobar si los tipos están bien o solo si están las keys?
 
