@@ -6,12 +6,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class PhysicsSimulator {
-	private Double dt;
+	private double dt;
 	private ForceLaws fl;
 	private List<Body> bodies;
-	private Double time;
+	private double time;
 	
-	public PhysicsSimulator(Double dt, ForceLaws fl) throws IllegalArgumentException {
+	public PhysicsSimulator(double dt, ForceLaws fl) throws IllegalArgumentException {
 		if (dt <= 0 || fl == null) throw new IllegalArgumentException();
 		this.dt = dt;
 		this.fl = fl;
@@ -36,10 +36,10 @@ public class PhysicsSimulator {
 	
 	public JSONObject getState() {
 		JSONObject jo = new JSONObject(); 
-		jo.put("time", time); 
 		JSONArray ja = new JSONArray();
 		for (Body b: bodies) ja.put(b.getState());
 		jo.put("bodies", ja);
+		jo.put("time", time); 
 		return jo; 
 	}
 	

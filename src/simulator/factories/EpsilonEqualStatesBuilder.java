@@ -9,7 +9,7 @@ import simulator.model.NewtonUniversalGravitation;
 public class EpsilonEqualStatesBuilder extends Builder<StateComparator> {
 	private static final String _type = "epseq";
 	private static final String _desc = "Epsilon Comparator";
-	private static final Double _defaultEpsilon = 0.1;
+	private static final Double _defaultEpsilon = 0.0;
 	
 	public EpsilonEqualStatesBuilder() {
 		super(_type, _desc);

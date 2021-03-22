@@ -1,7 +1,11 @@
 package simulator.launcher;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
@@ -281,40 +285,27 @@ public class Main {
 	}
 
 	private static void startBatchMode() throws Exception {
-		// Crear el simulador (PhysicsSimulator) --> hay que pasar por argumentos la fl y el dt
+		InputStream is = new FileInputStream(new File(_inFile));
+		OutputStream os = _outFile == null ? System.out : new FileOutputStream(new File(_outFile));
+		
+		// Crear el simulador
 		PhysicsSimulator simulator = new PhysicsSimulator(_dtime, _forceLawsFactory.createInstance(_forceLawsInfo));
+		// Crear el controlador
+		Controller cntr = new Controller(simulator, _bodyFactory);
+		cntr.loadBodies(is);
 		
-		// Ficheros de entrada y salida (i, o, eo) --> hay que comprobar si el o ha dado null
-		if(_outFile != null) {
-			// Archivo en _outFile
+		InputStream expOut = null;
+		
+		StateComparator stateCmp = null;
+		if(_expectedOutFile != null) {
+			expOut = new FileInputStream(new File(_expectedOutFile));
+			stateCmp = _stateComparatorFactory.createInstance(_stateComparatorInfo);
 		}
-		else {
-			// Consola
+		try {
+			cntr.run(_steps, os, expOut, stateCmp);
+		} catch (Exception ex) {
+			System.err.println(ex);
 		}
-		PrintStream p = new PrintStream(_outFile);
-		p.println("{");
-		p.println("\"states\": [");
-		
-		
-		// Comparador de estados de acuerdo con la info del cmp
-		StateComparator sc;
-		if(_stateComparatorInfo.has("epseq"))
-			sc = new EpsilonEqualStates(_stateComparatorInfo.getDouble("eps"));
-		else 
-			sc = new MassEqualStates();
-		
-		// Controller --> hay que pasar por parámetros el simulador y la factoria de cuerpos
-		Controller c = new Controller(simulator, _bodyFactory);
-		
-		// Metodo loadBodies() del controller
-		InputStream i = new ByteArrayInputStream(_inFile.getBytes());
-		c.loadBodies(i);
-		
-		// Llamar al run() del controller
-		// run the simulation n steps
-		c.run(_steps, p, i, sc);
-		p.println("]");
-		p.println("}");
 	}
 
 	private static void start(String[] args) throws Exception {
