@@ -2,6 +2,8 @@
 
 ## Aquí los cambios que se van realizando a lo largo del desarrollo de dicha práctica
 
+**22/03/2021** Terminadas las clases Main, Controller y PhysicsSimulator.
+
 **Dudas para Puri** - ¿Qué comprobaciones hay que hacer a la hora de leer JSONs? - ¿Tenemos que comprobar si los tipos están bien o solo si están las keys?
 
 **17/03/2021** Terminados todos los builders.
