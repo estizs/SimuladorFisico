@@ -2,6 +2,10 @@
 
 ## Aquí los cambios que se van realizando a lo largo del desarrollo de dicha práctica
 
+**30/03/2021** Modificaciones en el tipon Double, modificado el equals de la clase Body y añadidas declaraciones de ArraysList
+
+**Duditas para Puri uwu** Puri, responde, pofi :c
+
 **22/03/2021** Terminadas las clases Main, Controller y PhysicsSimulator. Aniversario de un mes con la mejor práctica que nos han dado en la carrera aunque Elena diga que no. Yo sigo pensando que no estoy en el grado de videojuegos.
 
 **Dudas para Puri** - ¿Qué comprobaciones hay que hacer a la hora de leer JSONs? - ¿Tenemos que comprobar si los tipos están bien o solo si están las keys?
