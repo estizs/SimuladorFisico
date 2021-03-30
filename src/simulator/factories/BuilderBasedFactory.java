@@ -11,8 +11,11 @@ public class BuilderBasedFactory<T> implements Factory<T> {
 
 	public BuilderBasedFactory(List<Builder<T>> builders) {
 		this.builders = new ArrayList<>(builders);
-		for(Builder<T> b : this.builders)
-			factoryElements.add(b.getBuilderInfo());
+		this.factoryElements = new ArrayList<>();
+		for(Builder<T> b : this.builders) {
+			JSONObject o = b.getBuilderInfo();
+			factoryElements.add(o);
+		}
 	}
 	
 	public T createInstance(JSONObject info) throws IllegalArgumentException {

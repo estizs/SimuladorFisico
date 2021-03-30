@@ -9,9 +9,9 @@ public class Body {
 	protected Vector2D v;
 	protected Vector2D f;
 	protected Vector2D p;
-	protected Double m;
+	protected double m;
 	
-	public Body(String id, Vector2D v, Vector2D p, Double m) {
+	public Body(String id, Vector2D v, Vector2D p, double m) {
 		this.id = id;
 		this.v = v;
 		this.f = new Vector2D(0, 0);
@@ -31,7 +31,7 @@ public class Body {
 	public Vector2D getPosition() {
 		return new Vector2D(p.getX(), p.getY());
 	}
-	public Double getMass() {
+	public double getMass() {
 		return m;
 	}
 	
@@ -41,7 +41,7 @@ public class Body {
 	void resetForce() {
 		this.f = new Vector2D(0, 0);
 	}
-	void move(Double t) {
+	void move(double t) {
 		Vector2D a;
 		if (m == 0.0) a = new Vector2D(0, 0);
 		// a = f/m
@@ -64,7 +64,7 @@ public class Body {
 	public String toString() {
 		return getState().toString();
 	}
-	public boolean equals(Object b) {
-		return id == ((Body)b).getId(); 
+	public boolean equals(Body b) {
+		return id == b.getId(); 
 	}
 }

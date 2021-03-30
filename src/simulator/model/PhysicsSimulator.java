@@ -1,5 +1,6 @@
 package simulator.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -16,6 +17,7 @@ public class PhysicsSimulator {
 		this.dt = dt;
 		this.fl = fl;
 		time = 0.0;
+		bodies = new ArrayList<>();
 	}
 	
 	public void advance() {
@@ -30,8 +32,10 @@ public class PhysicsSimulator {
 	}
 	
 	public void addBody(Body b) throws IllegalArgumentException {
-		if (bodies.contains(b)) throw new IllegalArgumentException();
-		bodies.add(b); 
+		System.out.println(b.getId());
+		boolean contiene = bodies.contains(b);
+		if (contiene) throw new IllegalArgumentException();
+		bodies.add(b);
 	}
 	
 	public JSONObject getState() {
