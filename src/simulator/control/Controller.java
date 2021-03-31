@@ -57,14 +57,14 @@ public class Controller {
 			expState = expOutJo.getJSONArray("states").getJSONObject(0);
 			if(!cmp.equal(expState, currState)) throw new NotEqualStatesException(expState, currState, 0);
 		}
-		for (int i = 1; i < n; ++i) {
+		for (int i = 0; i < n; ++i) {
 			simulator.advance();
 			currState = simulator.getState();
 			if(expOutJo != null) {
 				expState = expOutJo.getJSONArray("states").getJSONObject(i);
 				if(!cmp.equal(expState, currState)) throw new NotEqualStatesException(expState, currState, i);
 			}
-			p.println(currState);
+			p.println("," + currState);
 		}
 		p.println("]");
 		p.println("}");

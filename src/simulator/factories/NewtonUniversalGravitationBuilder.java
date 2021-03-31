@@ -8,7 +8,7 @@ import simulator.model.NewtonUniversalGravitation;
 public class NewtonUniversalGravitationBuilder extends Builder<ForceLaws> {
 	private static final String _type = "nlug";
 	private static final String _desc = "Newton's best law";
-	private static final double _gravitationalConstant = 6.67e10-11;
+	private static final double _gravitationalConstant = 6.67E-11;
 	
 	public NewtonUniversalGravitationBuilder() {
 		super(_type, _desc);
