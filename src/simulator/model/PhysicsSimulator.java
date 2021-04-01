@@ -32,7 +32,6 @@ public class PhysicsSimulator {
 	}
 	
 	public void addBody(Body b) throws IllegalArgumentException {
-		System.out.println(b.getId());
 		boolean contiene = bodies.contains(b);
 		if (contiene) throw new IllegalArgumentException();
 		bodies.add(b);

@@ -7,7 +7,7 @@ import simulator.model.ForceLaws;
 import simulator.model.MovingTowardsFixedPoint;
 
 public class MovingTowardsFixedPointBuilder extends Builder<ForceLaws> {
-	private static final String _type = "mtcp";
+	private static final String _type = "mtfp";
 	private static final String _desc = "Moving Towards Fixed Point Force Law";
 	private static final double _gravitation = 9.81;
 	
