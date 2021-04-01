@@ -2,6 +2,8 @@
 
 ## Aquí los cambios que se van realizando a lo largo del desarrollo de dicha práctica
 
+**01/04/2021** Hemos arreglado cositas: El for del Controller que tenía que ir desde 1 hasta n. Las condiciones del EpsilonEqualStates (remember hacer equals en vez de ==). En fin en el Builder de MassLosingBody teníamos mal el type... Y hemos generado todos los casos de prueba. Del 1 al 6 todo bien, el 7 wtf y el 8 es mi fav. Mañana más y mejor uwu. Enena is the best. Puri respondió. Borde. Pero respondió, ¿gracias?
+
 **30/03/2021** Modificaciones en el tipon Double, modificado el equals de la clase Body y añadidas declaraciones de ArraysList
 
 **Duditas para Puri uwu** Puri, responde, pofi :c
