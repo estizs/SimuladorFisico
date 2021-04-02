@@ -50,13 +50,14 @@ public class Controller {
 		JSONObject currState = null;
 		JSONObject expState = null;
 		
-		// Comparación de los estados iniciales
+		// Comparación del estado inicial
 		currState = simulator.getState();
 		p.println(currState);
 		if(expOutJo != null) {
 			expState = expOutJo.getJSONArray("states").getJSONObject(0);
 			if(!cmp.equal(expState, currState)) throw new NotEqualStatesException(expState, currState, 0);
 		}
+		// Resto de estados
 		for (int i = 1; i <= n; ++i) {
 			simulator.advance();
 			currState = simulator.getState();

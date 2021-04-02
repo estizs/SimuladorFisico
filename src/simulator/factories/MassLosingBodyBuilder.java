@@ -9,7 +9,7 @@ import simulator.model.MassLosingBody;
 
 public class MassLosingBodyBuilder extends Builder<Body> {
 	private static final String _type = "mlb";
-	private static final String _desc = "Mass losing Body";
+	private static final String _desc = "Mass Losing Body";
 	private static final int numArgs = 6;
 	
 	public MassLosingBodyBuilder() {
@@ -27,10 +27,13 @@ public class MassLosingBodyBuilder extends Builder<Body> {
 		double m = data.getDouble("m");
 		double freq = data.getDouble("freq");
 		double factor = data.getDouble("factor");
+		
 		JSONArray pos = data.getJSONArray("p");
 		Vector2D p = new Vector2D(pos.getDouble(0), pos.getDouble(1));
+		
 		JSONArray vel = data.getJSONArray("v");
 		Vector2D v = new Vector2D(vel.getDouble(0), vel.getDouble(1));
+		
 		return new MassLosingBody(id, v, p, m, factor, freq);
 	}
 	
@@ -41,8 +44,8 @@ public class MassLosingBodyBuilder extends Builder<Body> {
 		data.put("p", "the position");
 		data.put("v", "the velocity");
 		data.put("m", "the mass");
-		data.put("freq", "frequency within a Mass losing Body loses mass");
-		data.put("factor", "factor that indicates the quantity of mass lost by a Mass losing Body");
+		data.put("freq", "frequency within a Mass Losing Body loses mass");
+		data.put("factor", "factor that indicates the quantity of mass lost by a Mass Losing Body");
 		return data;
 	}
 }

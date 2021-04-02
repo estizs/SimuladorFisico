@@ -7,7 +7,7 @@ public class MassEqualStates implements StateComparator{
 	
 	@Override
 	public boolean equal(JSONObject s1, JSONObject s2) {
-		// Valor de sus claves "time" son distintas entonces falso
+		// Si el valor de sus claves "time" son distintas entonces falso
 		if (s1.getDouble("time") != s2.getDouble("time")) return false;
 		
 		JSONArray bodies1 = s1.getJSONArray("bodies");

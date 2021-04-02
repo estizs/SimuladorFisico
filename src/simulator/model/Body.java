@@ -22,15 +22,19 @@ public class Body {
 	public String getId() {
 		return id;
 	}
+	
 	public Vector2D getVelocity() {
 		return new Vector2D(v.getX(), v.getY());
 	}
+	
 	public Vector2D getForce() {
 		return new Vector2D(f.getX(), f.getY());
 	}
+	
 	public Vector2D getPosition() {
 		return new Vector2D(p.getX(), p.getY());
 	}
+	
 	public double getMass() {
 		return m;
 	}
@@ -38,9 +42,11 @@ public class Body {
 	void addForce(Vector2D f) {
 		this.f =  (this.f).plus(f);
 	}
+	
 	void resetForce() {
 		this.f = new Vector2D(0, 0);
 	}
+	
 	void move(double t) {
 		Vector2D a;
 		if (m == 0.0) a = new Vector2D(0, 0);
@@ -51,6 +57,7 @@ public class Body {
 		// v = v + a*t
 		v = v.plus(a.scale(t));
 	}
+	
 	public JSONObject getState() {
 		JSONObject jo = new JSONObject();
 		jo.put("id", getId());
@@ -60,9 +67,11 @@ public class Body {
 		jo.put("f", getForce().asJSONArray());
 		return jo; 
 	}
+	
 	public String toString() {
 		return getState().toString();
 	}
+	
 	public boolean equals(Body b) {
 		return id == b.getId(); 
 	}

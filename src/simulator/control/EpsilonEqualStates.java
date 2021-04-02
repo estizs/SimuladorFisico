@@ -17,7 +17,7 @@ public class EpsilonEqualStates implements StateComparator{
 		// Valor de sus claves "time" son distintas
 		if (s1.getDouble("time") != s2.getDouble("time")) return false;
 		
-		// Comprobamos si ambos estados tienen el mismo número de cuerpos
+		// Comprobamos si ambos estados tienen la misma cantidad de cuerpos
 		JSONArray bodies1 = s1.getJSONArray("bodies");
 		JSONArray bodies2 = s2.getJSONArray("bodies");
 		if(bodies1.length() != bodies2.length()) return false;

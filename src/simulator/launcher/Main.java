@@ -96,7 +96,7 @@ public class Main {
 
 			parseHelpOption(line, cmdLineOptions);
 			parseInFileOption(line);
-			// TODO add support of -o, -eo, and -s (define corresponding parse methods)
+			// -o, -eo, and -s 
 			parseOutputFileOption(line);
 			parseExpectedOutputOption(line);
 			parseStepsOption(line);
