@@ -22,6 +22,7 @@ public class MassLosingBodyBuilder extends Builder<Body> {
 		if(!data.has("id") || !data.has("m") || !data.has("p") || !data.has("v") || 
 		   !data.has("freq") || !data.has("factor") || data.length() != numArgs)
 			return null;
+		
 		String id = data.getString("id");
 		double m = data.getDouble("m");
 		double freq = data.getDouble("freq");

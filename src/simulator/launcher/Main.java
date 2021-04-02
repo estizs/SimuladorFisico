@@ -318,7 +318,7 @@ public class Main {
 			init();
 			start(args);
 		} catch (Exception e) {
-			System.err.println("Something went wrong ... :c");
+			System.err.println("Something went wrong ...");
 			System.err.println();
 			e.printStackTrace();
 		}
