@@ -18,7 +18,7 @@ public class Body {
 		this.p = p;
 		this.m = m;
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -72,7 +72,20 @@ public class Body {
 		return getState().toString();
 	}
 	
-	public boolean equals(Body b) {
-		return id == b.getId(); 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Body other = (Body) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 }
