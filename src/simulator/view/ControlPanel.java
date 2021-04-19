@@ -3,9 +3,15 @@ package simulator.view;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.List;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
+
 import simulator.control.*;
 import simulator.model.*;
 
@@ -19,7 +25,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		initGUI();
 		ctrl.addObserver(this);
 	}
-
+	
 	private void initGUI() {
 		// Control panel
 		JPanel controlPanel = new JPanel();
@@ -29,12 +35,28 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		leftPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 5));
 		// Buttons
 		leftPanel.add(new JLabel("  "));
-		leftPanel.add(new OpenButton());
+		JButton open = createButton("resources/icons/open.png");
+		open.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+				int returnValue = fileChooser.showOpenDialog(null);
+		        if (returnValue == JFileChooser.APPROVE_OPTION) {
+		        	try {
+		        		InputStream selectedFile = new FileInputStream(fileChooser.getSelectedFile());
+		        		ctrl.reset();
+			            ctrl.loadBodies(selectedFile);
+		        	} catch(Exception ex) {
+		        		JOptionPane.showMessageDialog(null, "El archivo seleccionado no es válido");
+		        	}
+		        }
+			}
+		});
+		leftPanel.add(open);
 		leftPanel.add(new JLabel("  "));
-		leftPanel.add(new PhysicsButton());
+		leftPanel.add(createButton("resources/icons/physics.png"));
 		leftPanel.add(new JLabel("  "));
-		leftPanel.add(new RunButton());
-		leftPanel.add(new StopButton());
+		leftPanel.add(createButton("resources/icons/run.png"));
+		leftPanel.add(createButton("resources/icons/stop.png"));
 		// Steps label
 		JLabel steps = new JLabel("Steps:");
 		leftPanel.add(steps);
@@ -111,5 +133,18 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public JButton createButton(String icon) {
+		Dimension dim = new Dimension(42, 32);
+		JButton b = new JButton();
+		b.setIcon(new ImageIcon(icon));
+		b.setOpaque(false);
+		b.setContentAreaFilled(false);
+		b.setPreferredSize(dim);
+		b.setMaximumSize(dim);
+		b.setMinimumSize(dim);
+		return b;
+	}
+	
 	
 }

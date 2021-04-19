@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-public abstract class BasicButton extends JButton implements ActionListener{
+public abstract class BasicButton extends JButton{
 	private static final Dimension dim = new Dimension(42, 32);
 	
 	public BasicButton(String icon){
