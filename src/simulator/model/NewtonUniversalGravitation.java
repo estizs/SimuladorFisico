@@ -26,4 +26,8 @@ public class NewtonUniversalGravitation implements ForceLaws{
 	    double magnitude = dist > 0 ? (_G * a.getMass() * b.getMass()) / (dist * dist) : 0.0;
 	    return delta.direction().scale(magnitude);
 	}
+	
+	public String toString() {
+		return "Newton's Universal Gravitation with G = " + _G;
+	}
 }

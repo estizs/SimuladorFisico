@@ -17,5 +17,8 @@ public class MovingTowardsFixedPoint implements ForceLaws{
 		for(Body b : bs)
 			b.addForce(c.minus(b.getPosition()).direction().scale(_g * b.getMass()));
 	}
-
+	
+	public String toString() {
+		return "Moving towards " + c + " with constant acceleration " + _g;
+	}
 }

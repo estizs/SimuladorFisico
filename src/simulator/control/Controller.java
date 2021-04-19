@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,15 +13,19 @@ import org.json.JSONTokener;
 import simulator.exceptions.NotEqualStatesException;
 import simulator.factories.Factory;
 import simulator.model.Body;
+import simulator.model.ForceLaws;
 import simulator.model.PhysicsSimulator;
+import simulator.model.SimulatorObserver;
 
 public class Controller {
 	private PhysicsSimulator simulator;
 	private Factory<Body> bodyFactory;
+	private Factory<ForceLaws> forceLawsFactory;
 	
-	public Controller(PhysicsSimulator simulator, Factory<Body> bodyFactory) {
+	public Controller(PhysicsSimulator simulator, Factory<Body> bodyFactory, Factory<ForceLaws> forceLawsFactory) {
 		this.simulator = simulator;
 		this.bodyFactory = bodyFactory;
+		this.forceLawsFactory = forceLawsFactory;
 	}
 	
 	public void loadBodies(InputStream in) {
@@ -69,6 +74,32 @@ public class Controller {
 		}
 		p.println("]");
 		p.println("}");
-	}	
+	}	// Como modificamos el run para que no pinte nada si estamos en el modo GUI y para que
+	// si lo haga en el BATCH (?????????????)
 	
+	public void reset() {
+		simulator.reset();
+	}
+	
+	public void setDeltaTime(double dt) {
+		simulator.setDeltaTime(dt);
+	}
+	
+	public void addObserver(SimulatorObserver o) {
+		simulator.addObserver(o);
+	}
+	
+	public List<JSONObject> getForceLawsInfo() {
+		return forceLawsFactory.getInfo();
+	}
+	
+	public void setForceLawsInfo(JSONObject info) {
+		// Se crea una nueva ForceLaws y se modifica por el que había en el simulador
+		simulator.setForceLaws(forceLawsFactory.createInstance(info));
+	}
+	
+	public void run(int n) {
+		for (int i = 0; i < n; i++) 
+			simulator.advance();
+	}
 }

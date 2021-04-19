@@ -7,7 +7,7 @@ import simulator.model.NewtonUniversalGravitation;
 
 public class NewtonUniversalGravitationBuilder extends Builder<ForceLaws> {
 	private static final String _type = "nlug";
-	private static final String _desc = "Newton's best law";
+	private static final String _desc = "Newton's law of universal gravitation";
 	private static final double _gravitationalConstant = 6.67E-11;
 	
 	public NewtonUniversalGravitationBuilder() {
@@ -23,7 +23,9 @@ public class NewtonUniversalGravitationBuilder extends Builder<ForceLaws> {
 	@Override
 	protected JSONObject createData() {
 		JSONObject data = new JSONObject();
-		data.put("g", "gravitational constant");
+		data.put("g", "the gravitational constant (a number)"); // Antes estaba en minúscula pero ahora en mayuscula ayuda (??????????????????)
 		return data;
 	}
+	
+	
 }
