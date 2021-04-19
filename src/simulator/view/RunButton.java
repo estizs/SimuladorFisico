@@ -3,9 +3,8 @@ package simulator.view;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-public class RunButton extends JButton {
+public class RunButton extends BasicButton {
 	public RunButton() {
-		super();
-		this.setIcon(new ImageIcon("resources/icons/run.png"));
+		super("resources/icons/run.png");
 	}
 }

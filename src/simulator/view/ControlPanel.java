@@ -1,6 +1,7 @@
 package simulator.view;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.List;
 
@@ -20,16 +21,43 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 	}
 
 	private void initGUI() {
+		// Control panel
 		JPanel controlPanel = new JPanel();
-		controlPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 200));
+		controlPanel.setLayout(new BorderLayout());
+		// Left panel
 		JPanel leftPanel = new JPanel();
-		leftPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+		leftPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 5));
+		// Buttons
+		leftPanel.add(new JLabel("  "));
 		leftPanel.add(new OpenButton());
+		leftPanel.add(new JLabel("  "));
 		leftPanel.add(new PhysicsButton());
+		leftPanel.add(new JLabel("  "));
 		leftPanel.add(new RunButton());
 		leftPanel.add(new StopButton());
-		controlPanel.add(leftPanel);
-		controlPanel.add(new ExitButton());
+		// Steps label
+		JLabel steps = new JLabel("Steps:");
+		leftPanel.add(steps);
+		// Steps spinner
+		JSpinner spin = new JSpinner();
+		spin.setPreferredSize(new Dimension(60, 30));
+		spin.setMaximumSize(new Dimension(60, 30));
+		spin.setMinimumSize(new Dimension(60, 30));
+		spin.setValue(10000);
+		leftPanel.add(spin);
+		// Delta-Time label
+		JLabel delta_time = new JLabel("Delta-Time");
+		leftPanel.add(delta_time);
+		// Delta-Time text field
+		JTextField dtField = new JTextField("2500.0");
+		leftPanel.add(dtField);
+		controlPanel.add(leftPanel, BorderLayout.WEST);
+		// Right panel
+		JPanel rightPanel = new JPanel();
+		rightPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+		// Exit button
+		rightPanel.add(new ExitButton());
+		controlPanel.add(rightPanel, BorderLayout.EAST);
 	}
 	
 	private void run_sim(int n) {

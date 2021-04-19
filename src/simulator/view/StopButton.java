@@ -3,9 +3,8 @@ package simulator.view;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-public class StopButton extends JButton{
+public class StopButton extends BasicButton{
 	public StopButton() {
-		super();
-		this.setIcon(new ImageIcon("resources/icons/stop.png"));
+		super("resources/icons/stop.png");
 	}
 }
