@@ -3,14 +3,18 @@ package simulator.view;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
+
+import org.json.JSONObject;
 
 import simulator.control.*;
 import simulator.model.*;
@@ -18,9 +22,11 @@ import simulator.model.*;
 public class ControlPanel extends JPanel implements SimulatorObserver{
 	private Controller ctrl;
 	private boolean stopped;
+	private JFrame window;
 	
-	public ControlPanel(Controller ctrl) {
+	public ControlPanel(Controller ctrl, JFrame window) {
 		this.ctrl = ctrl;
+		this.window = window;
 		stopped = true;
 		initGUI();
 		ctrl.addObserver(this);
@@ -53,7 +59,42 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		});
 		leftPanel.add(open);
 		leftPanel.add(new JLabel("  "));
-		leftPanel.add(createButton("resources/icons/physics.png"));
+		JButton physics = createButton("resources/icons/physics.png");
+		physics.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JDialog flSelection = new JDialog(window, "Force Laws Selection");
+				JPanel selectionPanel = new JPanel();
+				selectionPanel.setLayout(new BoxLayout(selectionPanel, BoxLayout.Y_AXIS));
+				
+				JTextArea desc = new JTextArea("Select a force law and provide values for the parameters in the Value column (default values are used for parameters with no value)");
+				desc.setLineWrap(true);
+				desc.setWrapStyleWord(true);
+				desc.setOpaque(false);
+				selectionPanel.add(desc);
+				
+				JTable values = new JTable(3, 3);
+				selectionPanel.add(values);
+				JPanel selection = new JPanel();
+				selection.setLayout(new FlowLayout());
+				selection.add(new JLabel("Force Laws: "));
+				JComboBox<String> cbo = new JComboBox<String>(getForceLawsVector());
+				selection.add(cbo);
+				selectionPanel.add(selection);
+				
+				JPanel buttons = new JPanel();
+				buttons.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+				buttons.add(new JButton("Cancel"));
+				buttons.add(new JButton("OK"));
+				selectionPanel.add(buttons);
+				
+				flSelection.add(selectionPanel);
+				
+				flSelection.setVisible(true);
+				flSelection.setSize(600, 210);
+			}
+			
+		});
+		leftPanel.add(physics);
 		leftPanel.add(new JLabel("  "));
 		leftPanel.add(createButton("resources/icons/run.png"));
 		leftPanel.add(createButton("resources/icons/stop.png"));
@@ -146,5 +187,12 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		return b;
 	}
 	
+	private Vector<String> getForceLawsVector() {
+		List<JSONObject> infoFl = ctrl.getForceLawsInfo();
+		Vector<String> flVector = new Vector<String>();
+		for (JSONObject jo: infoFl)
+			flVector.addElement((String) jo.get("desc"));
+		return flVector;
+	}
 	
 }
