@@ -14,6 +14,7 @@ import java.util.Vector;
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import simulator.control.*;
@@ -36,11 +37,22 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		// Control panel
 		JPanel controlPanel = new JPanel();
 		controlPanel.setLayout(new BorderLayout());
-		// Left panel
-		JPanel leftPanel = new JPanel();
-		leftPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 5));
-		// Buttons
-		leftPanel.add(new JLabel("  "));
+		// Tool bar
+		JToolBar toolBar = new JToolBar();
+		// Steps label
+		JLabel steps = new JLabel("Steps:");
+		// Steps spinner
+		JSpinner spin = new JSpinner();
+		spin.setPreferredSize(new Dimension(60, 30));
+		spin.setMaximumSize(new Dimension(60, 30));
+		spin.setMinimumSize(new Dimension(60, 30));
+		spin.setValue(10000);
+		// Delta-Time label
+		JLabel delta_time = new JLabel("Delta-Time");
+		// Delta-Time text field
+		JTextField dtField = new JTextField("2500.0");
+		// BUTTONS
+		// Open button
 		JButton open = createButton("resources/icons/open.png");
 		open.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -57,63 +69,62 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		        }
 			}
 		});
-		leftPanel.add(open);
-		leftPanel.add(new JLabel("  "));
+		// Physics button
 		JButton physics = createButton("resources/icons/physics.png");
 		physics.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// Cuadro de diálogo
 				JDialog flSelection = new JDialog(window, "Force Laws Selection");
+				// Panel principal
 				JPanel selectionPanel = new JPanel();
 				selectionPanel.setLayout(new BoxLayout(selectionPanel, BoxLayout.Y_AXIS));
-				
+				// Texto descriptivo
 				JTextArea desc = new JTextArea("Select a force law and provide values for the parameters in the Value column (default values are used for parameters with no value)");
 				desc.setLineWrap(true);
 				desc.setWrapStyleWord(true);
 				desc.setOpaque(false);
 				selectionPanel.add(desc);
-				
-				JTable values = new JTable(3, 3);
-				selectionPanel.add(values);
+				// Panel de selección fl
 				JPanel selection = new JPanel();
 				selection.setLayout(new FlowLayout());
-				selection.add(new JLabel("Force Laws: "));
+				// JComboBox
 				JComboBox<String> cbo = new JComboBox<String>(getForceLawsVector());
+				// Tabla con valores
+				JTable values = new JTable(getRowData(getSelectedForceLaw((String) cbo.getSelectedItem())), getColumnValue());
+				selectionPanel.add(values);
+				// Label auxiliar
+				selection.add(new JLabel("Force Laws: "));
 				selection.add(cbo);
-				selectionPanel.add(selection);
-				
+				// Panel de botones
 				JPanel buttons = new JPanel();
 				buttons.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 				buttons.add(new JButton("Cancel"));
 				buttons.add(new JButton("OK"));
 				selectionPanel.add(buttons);
-				
 				flSelection.add(selectionPanel);
-				
+				// Visibilidad y tamaño del cuádro de diálogo
 				flSelection.setVisible(true);
 				flSelection.setSize(600, 210);
 			}
-			
 		});
-		leftPanel.add(physics);
-		leftPanel.add(new JLabel("  "));
-		leftPanel.add(createButton("resources/icons/run.png"));
+		// Run button
+		JButton run = createButton("resources/icons/run.png");
+		run.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Disable all buttons except for stop
+				open.setEnabled(false);
+				physics.setEnabled(false);
+				run.setEnabled(false);
+				stopped = false;
+				// Poner el delta-time al valor del campo de texto
+				ctrl.setDeltaTime(Double.parseDouble(dtField.getText()));
+				// Ejecutar la simulación
+				run_sim((int) spin.getValue());
+			}
+		});
+		controlPanel.add(toolBar, BorderLayout.NORTH);
 		leftPanel.add(createButton("resources/icons/stop.png"));
-		// Steps label
-		JLabel steps = new JLabel("Steps:");
-		leftPanel.add(steps);
-		// Steps spinner
-		JSpinner spin = new JSpinner();
-		spin.setPreferredSize(new Dimension(60, 30));
-		spin.setMaximumSize(new Dimension(60, 30));
-		spin.setMinimumSize(new Dimension(60, 30));
-		spin.setValue(10000);
-		leftPanel.add(spin);
-		// Delta-Time label
-		JLabel delta_time = new JLabel("Delta-Time");
-		leftPanel.add(delta_time);
-		// Delta-Time text field
-		JTextField dtField = new JTextField("2500.0");
-		leftPanel.add(dtField);
+		
 		controlPanel.add(leftPanel, BorderLayout.WEST);
 		// Right panel
 		JPanel rightPanel = new JPanel();
@@ -194,5 +205,27 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 			flVector.addElement((String) jo.get("desc"));
 		return flVector;
 	}
-	
+	private String[] getColumnValue() {
+		String[] values = {"Key", "Value", "Description"};
+		return values;
+	}
+	private String[][] getRowData(JSONObject selectedItem) {
+		String[][] data = new String[1][1];
+		JSONObject info = selectedItem.getJSONObject("data");
+		int i = 0;
+		for(String key : info.keySet()) {
+			data[i][0] = key;
+			data[i][1] = "";
+			data[i][2] = info.getString(key);
+			++i;
+		}
+		return data;
+	}
+	private JSONObject getSelectedForceLaw(String selectedItem) {
+		List<JSONObject> ja = ctrl.getForceLawsInfo();
+		for(JSONObject jo: ja)
+			if(selectedItem.equals(jo.getString("desc")))
+				return jo;
+		return null;
+	}
 }
