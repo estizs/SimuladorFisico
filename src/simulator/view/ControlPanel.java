@@ -24,6 +24,16 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 	private Controller ctrl;
 	private boolean stopped;
 	private JFrame window;
+	// Los botones
+	private JButton open;
+	private JButton physics;
+	private JButton run;
+	private JButton stop;
+	private JButton exit;
+	// El spinner de los pasos
+	private JSpinner spin;
+	// El JTextField del delta-time
+	private JTextField dtField;
 	
 	public ControlPanel(Controller ctrl, JFrame window) {
 		this.ctrl = ctrl;
@@ -42,105 +52,51 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		// Steps label
 		JLabel steps = new JLabel("Steps:");
 		// Steps spinner
-		JSpinner spin = new JSpinner();
-		spin.setPreferredSize(new Dimension(60, 30));
-		spin.setMaximumSize(new Dimension(60, 30));
-		spin.setMinimumSize(new Dimension(60, 30));
-		spin.setValue(10000);
+		initSpinner();
 		// Delta-Time label
 		JLabel delta_time = new JLabel("Delta-Time");
 		// Delta-Time text field
-		JTextField dtField = new JTextField("2500.0");
+		dtField = new JTextField("2500.0");
+		
 		// BUTTONS
 		// Open button
-		JButton open = createButton("resources/icons/open.png");
-		open.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-				int returnValue = fileChooser.showOpenDialog(null);
-		        if (returnValue == JFileChooser.APPROVE_OPTION) {
-		        	try {
-		        		InputStream selectedFile = new FileInputStream(fileChooser.getSelectedFile());
-		        		ctrl.reset();
-			            ctrl.loadBodies(selectedFile);
-		        	} catch(Exception ex) {
-		        		JOptionPane.showMessageDialog(null, "El archivo seleccionado no es válido");
-		        	}
-		        }
-			}
-		});
+		initOpenButton();
 		// Physics button
-		JButton physics = createButton("resources/icons/physics.png");
-		physics.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// Cuadro de diálogo
-				JDialog flSelection = new JDialog(window, "Force Laws Selection");
-				// Panel principal
-				JPanel selectionPanel = new JPanel();
-				selectionPanel.setLayout(new BoxLayout(selectionPanel, BoxLayout.Y_AXIS));
-				// Texto descriptivo
-				JTextArea desc = new JTextArea("Select a force law and provide values for the parameters in the Value column (default values are used for parameters with no value)");
-				desc.setLineWrap(true);
-				desc.setWrapStyleWord(true);
-				desc.setOpaque(false);
-				selectionPanel.add(desc);
-				// Panel de selección fl
-				JPanel selection = new JPanel();
-				selection.setLayout(new FlowLayout());
-				// JComboBox
-				JComboBox<String> cbo = new JComboBox<String>(getForceLawsVector());
-				// Tabla con valores
-				JTable values = new JTable(getRowData(getSelectedForceLaw((String) cbo.getSelectedItem())), getColumnValue());
-				selectionPanel.add(values);
-				// Label auxiliar
-				selection.add(new JLabel("Force Laws: "));
-				selection.add(cbo);
-				// Panel de botones
-				JPanel buttons = new JPanel();
-				buttons.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
-				buttons.add(new JButton("Cancel"));
-				buttons.add(new JButton("OK"));
-				selectionPanel.add(buttons);
-				flSelection.add(selectionPanel);
-				// Visibilidad y tamaño del cuádro de diálogo
-				flSelection.setVisible(true);
-				flSelection.setSize(600, 210);
-			}
-		});
+		initPhysicsButton();
 		// Run button
-		JButton run = createButton("resources/icons/run.png");
-		run.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// Disable all buttons except for stop
-				open.setEnabled(false);
-				physics.setEnabled(false);
-				run.setEnabled(false);
-				stopped = false;
-				// Poner el delta-time al valor del campo de texto
-				ctrl.setDeltaTime(Double.parseDouble(dtField.getText()));
-				// Ejecutar la simulación
-				run_sim((int) spin.getValue());
-			}
-		});
-		controlPanel.add(toolBar, BorderLayout.NORTH);
-		leftPanel.add(createButton("resources/icons/stop.png"));
-		
-		controlPanel.add(leftPanel, BorderLayout.WEST);
-		// Right panel
-		JPanel rightPanel = new JPanel();
-		rightPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+		initRunButton();
+		// Stop button
+		initStopButton();
 		// Exit button
-		rightPanel.add(new ExitButton());
-		controlPanel.add(rightPanel, BorderLayout.EAST);
+		initExitButton();
+		
+		// Añadimos los botones al toolBar
+		toolBar.add(open);
+		toolBar.add(physics);
+		toolBar.add(run);
+		toolBar.add(stop);
+		toolBar.add(steps);
+		toolBar.add(spin);
+		toolBar.add(delta_time);
+		toolBar.add(dtField);
+		// Añadimos el pegamento
+		toolBar.add(Box.createHorizontalGlue());
+		// Añadimos el botón de exit
+		toolBar.add(exit);
+		
+		// Añadimos la toolbar
+		controlPanel.add(toolBar);
 	}
-	
+
 	private void run_sim(int n) {
 		if (n > 0 && !stopped) {
 			try {
 				ctrl.run(1);
 			} catch(Exception ex) {
-				// TODO show the error in a dialog box
-				// TODO enable all buttons
+				// Show the error in a dialog box
+				JOptionPane.showMessageDialog(null, "There was an error");
+				// Enable all buttons
+				enableButtons();
 				stopped = true;
 				return;
 			}
@@ -152,39 +108,28 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		}
 		else {
 			stopped = true;
-			// TODO enable all buttons
+			// Enable all buttons
+			enableButtons();
 		}
 	}
 	
 	public void onRegister(List<Body> bodies, double time, double dt, String fLawsDesc) {
-		// TODO Auto-generated method stub
-		
+		dtField.setText(dt + "");
 	}
 
 	public void onReset(List<Body> bodies, double time, double dt, String fLawsDesc) {
-		// TODO Auto-generated method stub
-		
+		dtField.setText(dt + "");
 	}
 
-	public void onBodyAdded(List<Body> bodies, Body b) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onBodyAdded(List<Body> bodies, Body b) {}
 
-	public void onAdvance(List<Body> bodies, double time) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onAdvance(List<Body> bodies, double time) {}
 
 	public void onDeltaTimeChanged(double dt) {
-		// TODO Auto-generated method stub
-		
+		dtField.setText(dt + "");
 	}
 
-	public void onForceLawsChanged(String fLawsDesc) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onForceLawsChanged(String fLawsDesc) {}
 	
 	public JButton createButton(String icon) {
 		Dimension dim = new Dimension(42, 32);
@@ -227,5 +172,145 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 			if(selectedItem.equals(jo.getString("desc")))
 				return jo;
 		return null;
+	}
+	
+	private void disableButtons() {
+		open.setEnabled(false);
+		physics.setEnabled(false);
+		run.setEnabled(false);
+		exit.setEnabled(false);
+	}
+	
+	private void enableButtons() {
+		open.setEnabled(true);
+		physics.setEnabled(true);
+		run.setEnabled(true);
+		exit.setEnabled(true);
+		stop.setEnabled(true);
+	}
+	
+	private void initOpenButton() {
+		open = createButton("resources/icons/open.png");
+		open.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+				int returnValue = fileChooser.showOpenDialog(null);
+		        if (returnValue == JFileChooser.APPROVE_OPTION) {
+		        	try {
+		        		InputStream selectedFile = new FileInputStream(fileChooser.getSelectedFile());
+		        		ctrl.reset();
+			            ctrl.loadBodies(selectedFile);
+		        	} catch(Exception ex) {
+		        		JOptionPane.showMessageDialog(null, "El archivo seleccionado no es válido");
+		        	}
+		        }
+			}
+		});
+	}
+	
+	private void initPhysicsButton() {
+		physics = createButton("resources/icons/physics.png");
+		physics.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Cuadro de diálogo
+				JDialog flSelection = new JDialog(window, "Force Laws Selection");
+				// Panel principal
+				JPanel selectionPanel = new JPanel();
+				selectionPanel.setLayout(new BoxLayout(selectionPanel, BoxLayout.Y_AXIS));
+				// Texto descriptivo
+				JTextArea desc = new JTextArea("Select a force law and provide values for the parameters in the Value column (default values are used for parameters with no value)");
+				desc.setLineWrap(true);
+				desc.setWrapStyleWord(true);
+				desc.setOpaque(false);
+				selectionPanel.add(desc);
+				// Panel de selección fl
+				JPanel selection = new JPanel();
+				selection.setLayout(new FlowLayout());
+				// JComboBox
+				JComboBox<String> cbo = new JComboBox<String>(getForceLawsVector());
+				// Tabla con valores
+				JTable values = new JTable(getRowData(getSelectedForceLaw((String) cbo.getSelectedItem())), getColumnValue());
+				selectionPanel.add(values);
+				// Label auxiliar
+				selection.add(new JLabel("Force Laws: "));
+				selection.add(cbo);
+				// Panel de botones
+				JPanel buttons = new JPanel();
+				buttons.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+				buttons.add(new JButton("Cancel"));
+				buttons.add(new JButton("OK"));
+				selectionPanel.add(buttons);
+				flSelection.add(selectionPanel);
+				// Visibilidad y tamaño del cuádro de diálogo
+				flSelection.setVisible(true);
+				flSelection.setSize(600, 210);
+			}
+		});
+	}
+	
+	private void initRunButton() {
+		run = createButton("resources/icons/run.png");
+		run.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Disable all buttons except for stop
+				disableButtons();
+				stopped = false;
+				// Poner el delta-time al valor del campo de texto
+				ctrl.setDeltaTime(Double.parseDouble(dtField.getText()));
+				// Ejecutar la simulación
+				run_sim((int) spin.getValue());
+			}
+		});
+	}
+	
+	private void initStopButton() {
+		stop = createButton("resources/icons/stop.png");
+		stop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				stopped = true;
+			}
+		});
+	}
+	
+	private void initExitButton() {
+		exit = createButton("resources/icons/exit.png");
+		exit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Pedir confirmación al usuario
+				JDialog confirmacion = new JDialog(window, "Exit");
+				JPanel panelC = new JPanel();
+				panelC.setLayout(new BoxLayout(panelC, BoxLayout.Y_AXIS));
+				panelC.add(new JLabel("You're about to exit the application"));
+				panelC.add(new JLabel("Exit and close the application?"));
+				JPanel panelB = new JPanel();
+				panelB.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+				JButton ok = new JButton("OK");
+				ok.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						System.exit(0);
+					}
+				});
+				JButton cancel = new JButton("Cancel");
+				cancel.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						confirmacion.dispose();
+					}
+				});
+				panelB.add(ok);
+				panelB.add(cancel);
+				panelC.add(panelB);
+				confirmacion.add(panelC);
+				confirmacion.setVisible(true);
+				confirmacion.setBounds(window.getWidth() / 2 - 200, window.getHeight() / 2 - 50, 400, 100);
+			}
+		});
+	}
+	
+	private void initSpinner() {
+		spin = new JSpinner();
+		spin.setPreferredSize(new Dimension(60, 30));
+		spin.setMaximumSize(new Dimension(60, 30));
+		spin.setMinimumSize(new Dimension(60, 30));
+		spin.setValue(10000);
 	}
 }
