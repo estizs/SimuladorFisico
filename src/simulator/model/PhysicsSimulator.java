@@ -87,5 +87,9 @@ public class PhysicsSimulator {
 		// Notificamos que se ha añadido un observador
 		o.onRegister(bodies, time, dt, fl.toString());
 	}
+
+	public ForceLaws getForceLaws() {
+		return fl;
+	}
 	
 }

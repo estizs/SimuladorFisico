@@ -103,22 +103,22 @@ public class Viewer extends JComponent implements SimulatorObserver {
 		_centerY = getHeight() / 2;
 		
 		// Draw a cross at center
-		gr.setColor(Color.PINK);
-		gr.drawLine(_centerX, _centerY - 5, _centerX, _centerY + 5);
-		gr.drawLine(_centerX - 5, _centerY, _centerX + 5, _centerY);
+		drawCross(gr, Color.RED, 5);
 		
 		// Draw bodies (with vectors if _showVectors is true)
 		gr.setColor(Color.BLUE);
-		for(Body b : _bodies)
-			gr.fillOval((int) b.getPosition().getX(), (int) b.getPosition().getY(), 5, 5);
-		if(_showVectors)
+		for(Body b : _bodies) {
+			gr.fillOval(_centerX + (int) (b.getPosition().getX() / _scale), _centerY - (int) (b.getPosition().getY() / _scale), 5, 5);
+			gr.drawString(b.getId(), _centerX + (int) (b.getPosition().getX() / _scale), _centerY - (int) (b.getPosition().getY() / _scale) + 5);
+		}
+		if(_showVectors) // PREGUNTA DE LOS VECTORES
 			for(Body b : _bodies) {
-				drawLineWithArrow(gr, (int) b.getPosition().getX(), (int) b.getPosition().getY(), 
+				drawLineWithArrow(gr, _centerX + (int) (b.getPosition().getX() / _scale), _centerY - (int) (b.getPosition().getY() / _scale), 
 								  (int) b.getPosition().plus(b.getForce()).getX(), (int) b.getPosition().plus(b.getForce()).getY(), 2, 2, Color.GREEN, Color.GREEN);
 				drawLineWithArrow(gr, (int) b.getPosition().getX(), (int) b.getPosition().getY(), 
-						  (int) b.getPosition().plus(b.getVelocity()).getX(), (int) b.getPosition().plus(b.getVelocity()).getY(), 2, 2, Color.PINK, Color.PINK);
+						  (int) b.getPosition().plus(b.getVelocity()).getX(), (int) b.getPosition().plus(b.getVelocity()).getY(), 2, 2, Color.RED, Color.RED);
 			}
-	
+		
 		// Draw help if _showHelp is true
 		if(_showHelp) {
 			gr.drawString(SHOW_HELP_TEXT, 0, 0);
@@ -162,27 +162,35 @@ public class Viewer extends JComponent implements SimulatorObserver {
 		g.setColor(arrowColor);
 		g.fillPolygon(xpoints, ypoints, 3);
 	}
+	private void drawCross(Graphics2D gr, Color color, int length) {
+		gr.setColor(color);
+		gr.drawLine(_centerX, _centerY - length, _centerX, _centerY + length);
+		gr.drawLine(_centerX - length, _centerY, _centerX + length, _centerY);
+	}
+	
 	public void onRegister(List<Body> bodies, double time, double dt, String fLawsDesc) {
-
+		_bodies = bodies;
+		autoScale();
+		repaint();
 	}
 
 	public void onReset(List<Body> bodies, double time, double dt, String fLawsDesc) {
-
+		_bodies = bodies;
+		autoScale();
+		repaint();
 	}
 
 	public void onBodyAdded(List<Body> bodies, Body b) {
-		
+		_bodies = bodies;
+		autoScale();
+		repaint();
 	}
 	
-	public void onAdvance(List<Body> bodies, double time) {
-		
+	public void onAdvance(List<Body> bodies, double time) { // POSIBLE ERROR DE ACTUALIZACION
+		repaint();
 	}
 
-	public void onDeltaTimeChanged(double dt) {
-		
-	}
+	public void onDeltaTimeChanged(double dt) {}
 	
-	public void onForceLawsChanged(String fLawsDesc) {
-		
-	}
+	public void onForceLawsChanged(String fLawsDesc) {}
 }

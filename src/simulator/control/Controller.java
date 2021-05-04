@@ -102,4 +102,8 @@ public class Controller {
 		for (int i = 0; i < n; i++) 
 			simulator.advance();
 	}
+	
+	public ForceLaws getForceLaws() {
+		return simulator.getForceLaws();
+	}
 }
