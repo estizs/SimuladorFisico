@@ -10,20 +10,22 @@ import simulator.model.Body;
 import simulator.model.SimulatorObserver;
 
 public class BodiesTableModel extends AbstractTableModel implements SimulatorObserver {
-	private static final int COLUMNS = 5;
 	private List<Body> bodies;
+	private String[] columnNames;
 	
-	BodiesTableModel(Controller ctrl) {
+	BodiesTableModel(Controller ctrl, String[] columnNames) {
 		bodies = new ArrayList<>();
 		ctrl.addObserver(this);
+		this.columnNames = columnNames;
 	}
 
 	public int getRowCount() {
-		return bodies.size() + 1;
+		if(bodies == null) return 0;
+		else return bodies.size();
 	}
 
 	public int getColumnCount() {
-		return COLUMNS;
+		return columnNames.length;
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
@@ -41,6 +43,11 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
 		default:
 			return null;
 		}
+	}
+	
+	public String getColumnName(int col) {
+		if(columnNames == null) return "";
+		else return columnNames[col];
 	}
 
 	public void onRegister(List<Body> bodies, double time, double dt, String fLawsDesc) {

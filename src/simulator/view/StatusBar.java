@@ -16,14 +16,10 @@ public class StatusBar extends JPanel implements SimulatorObserver {
 	private JLabel currTime;
 	private JLabel currLaws;
 	private JLabel numOfBodies;
-	private ForceLaws fl;
-	private Controller ctrl;
 	
 	public StatusBar(Controller ctrl) {
-		this.ctrl = ctrl;
 		initGUI();
 		ctrl.addObserver(this);
-		this.fl = ctrl.getForceLaws();
 	}
 	
 	private void initGUI() {
@@ -42,15 +38,13 @@ public class StatusBar extends JPanel implements SimulatorObserver {
 	}
 
 	public void onRegister(List<Body> bodies, double time, double dt, String fLawsDesc) {
-		fl = ctrl.getForceLaws();
-		currLaws.setText("Laws: " + fl);
+		currLaws.setText("Laws: " + fLawsDesc);
 		currTime.setText("Time: " + time);
 		numOfBodies.setText("Bodies: " + bodies.size());
 	}
 
 	public void onReset(List<Body> bodies, double time, double dt, String fLawsDesc) {
-		fl = ctrl.getForceLaws();
-		currLaws.setText("Laws: " + fl);
+		currLaws.setText("Laws: " + fLawsDesc);
 		currTime.setText("Time: " + time);
 		numOfBodies.setText("Bodies: " + bodies.size());
 	}
@@ -66,8 +60,7 @@ public class StatusBar extends JPanel implements SimulatorObserver {
 	public void onDeltaTimeChanged(double dt) {}
 
 	public void onForceLawsChanged(String fLawsDesc) {
-		fl = ctrl.getForceLaws();
-		currLaws.setText("Laws: " + fl);
+		currLaws.setText("Laws: " + fLawsDesc);
 	}
 
 }

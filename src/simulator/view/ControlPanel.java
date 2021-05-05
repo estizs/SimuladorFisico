@@ -34,6 +34,16 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 	private JSpinner spin;
 	// El JTextField del delta-time
 	private JTextField dtField;
+	// Fichero de datos
+	JFileChooser fileChooser;
+	private static final String OPEN_TOOLTIP = "Cargar fichero seleccionado en el simulador.";
+	private static final String PHYSICS_TOOLTIP = "Introducir una de las leyes de fuerza disponibles.";
+	private static final String RUN_TOOLTIP = "Ejecutar la simulación.";
+	private static final String STOP_TOOLTIP = "Parar la simulación.";
+	private static final String EXIT_TOOLTIP = "Salir de la aplicación.";
+	private static final String[] columnNames = {
+			"Key", "Value", "Description"
+	};
 	
 	public ControlPanel(Controller ctrl, JFrame window) {
 		this.ctrl = ctrl;
@@ -60,6 +70,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		
 		// BUTTONS
 		// Open button
+		fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 		initOpenButton();
 		// Physics button
 		initPhysicsButton();
@@ -150,10 +161,12 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 			flVector.addElement((String) jo.get("desc"));
 		return flVector;
 	}
+	
 	private String[] getColumnValue() {
 		String[] values = {"Key", "Value", "Description"};
 		return values;
 	}
+	
 	private String[][] getRowData(JSONObject selectedItem) {
 		String[][] data = new String[1][1];
 		JSONObject info = selectedItem.getJSONObject("data");
@@ -166,6 +179,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		}
 		return data;
 	}
+	
 	private JSONObject getSelectedForceLaw(String selectedItem) {
 		List<JSONObject> ja = ctrl.getForceLawsInfo();
 		for(JSONObject jo: ja)
@@ -193,7 +207,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		open = createButton("resources/icons/open.png");
 		open.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+				
 				int returnValue = fileChooser.showOpenDialog(null);
 		        if (returnValue == JFileChooser.APPROVE_OPTION) {
 		        	try {
@@ -206,6 +220,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		        }
 			}
 		});
+		open.setToolTipText(OPEN_TOOLTIP);
 	}
 	
 	private void initPhysicsButton() {
@@ -229,7 +244,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 				// JComboBox
 				JComboBox<String> cbo = new JComboBox<String>(getForceLawsVector());
 				// Tabla con valores
-				JTable values = new JTable(getRowData(getSelectedForceLaw((String) cbo.getSelectedItem())), getColumnValue());
+				JTable values = new JTable(new ForceLawsTableModel(getRowData(getSelectedForceLaw((String) cbo.getSelectedItem())), columnNames));
 				selectionPanel.add(values);
 				// Label auxiliar
 				selection.add(new JLabel("Force Laws: "));
@@ -246,6 +261,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 				flSelection.setSize(600, 210);
 			}
 		});
+		physics.setToolTipText(PHYSICS_TOOLTIP);
 	}
 	
 	private void initRunButton() {
@@ -261,6 +277,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 				run_sim((int) spin.getValue());
 			}
 		});
+		run.setToolTipText(RUN_TOOLTIP);
 	}
 	
 	private void initStopButton() {
@@ -270,6 +287,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 				stopped = true;
 			}
 		});
+		stop.setToolTipText(STOP_TOOLTIP);
 	}
 	
 	private void initExitButton() {
@@ -304,6 +322,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 				confirmacion.setBounds(window.getWidth() / 2 - 200, window.getHeight() / 2 - 50, 400, 100);
 			}
 		});
+		exit.setToolTipText(EXIT_TOOLTIP);
 	}
 	
 	private void initSpinner() {
