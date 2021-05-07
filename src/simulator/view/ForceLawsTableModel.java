@@ -3,6 +3,7 @@ package simulator.view;
 import javax.swing.table.AbstractTableModel;
 
 public class ForceLawsTableModel extends AbstractTableModel  {
+	private static final long serialVersionUID = 1L;
 	private String[][] fl;
 	private String[] columnNames;
 	
@@ -23,7 +24,16 @@ public class ForceLawsTableModel extends AbstractTableModel  {
 		return fl[rowIndex][columnIndex];
 	}
 	
+	public void setValueAt(Object object, int row, int col) {
+		fl[row][col] = (String) object; // POSIBLE ERROR DE CONVERSIÓN
+		fireTableCellUpdated(row, col);
+	}
+
 	public boolean isCellEditable(int row, int col) {
 		return col == 1;
+	}
+	
+	public String getColumnName(int col) {
+		return columnNames[col];
 	}
 }

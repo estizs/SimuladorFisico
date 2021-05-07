@@ -12,15 +12,17 @@ import javax.swing.border.TitledBorder;
 import simulator.control.Controller;
 
 public class BodiesTable extends JPanel {
-	private String[] columnNames = {
-				"Id", "Mass", "Position", "Velocity", "Force"	
-			};
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public BodiesTable(Controller ctrl){
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black, 2), "Bodies", TitledBorder.LEFT, TitledBorder.TOP));
 		// Crear una instancia BodiesTableModel (se le pasa a la JTable)
-		BodiesTableModel model = new BodiesTableModel(ctrl, columnNames);
+		BodiesTableModel model = new BodiesTableModel(ctrl);
 		JTable bodiesTable = new JTable(model);
 		// Añadir JTable a this con un JScrollPane
 		JScrollPane pane = new JScrollPane(bodiesTable);

@@ -9,7 +9,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +22,10 @@ import simulator.model.Body;
 import simulator.model.SimulatorObserver;
 
 public class Viewer extends JComponent implements SimulatorObserver {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int _centerX;
 	private int _centerY;
 	private double _scale;

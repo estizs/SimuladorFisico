@@ -7,7 +7,10 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -35,6 +38,7 @@ import simulator.factories.EpsilonEqualStatesBuilder;
 import simulator.model.Body;
 import simulator.model.ForceLaws;
 import simulator.model.PhysicsSimulator;
+import simulator.view.MainWindow;
 
 public class Main {
 
@@ -103,6 +107,7 @@ public class Main {
 			parseDeltaTimeOption(line);
 			parseForceLawsOption(line);
 			parseStateComparatorOption(line);
+			parseModeOption(line);
 
 			// if there are some remaining arguments, then something wrong is
 			// provided in the command line!
@@ -119,6 +124,11 @@ public class Main {
 			System.exit(1);
 		}
 
+	}
+
+	private static void parseModeOption(CommandLine line) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private static void parseStepsOption(CommandLine line) throws ParseException{
@@ -291,7 +301,7 @@ public class Main {
 		// Crear el simulador
 		PhysicsSimulator simulator = new PhysicsSimulator(_dtime, _forceLawsFactory.createInstance(_forceLawsInfo));
 		// Crear el controlador
-		Controller cntr = new Controller(simulator, _bodyFactory);
+		Controller cntr = new Controller(simulator, _bodyFactory, _forceLawsFactory);
 		cntr.loadBodies(is);
 		
 		InputStream expOut = null;
@@ -307,10 +317,20 @@ public class Main {
 			System.err.println(ex);
 		}
 	}
-
+	
+	private static void startGUIMode() {
+		PhysicsSimulator p = new PhysicsSimulator(1);
+//		try {
+			Controller c = new Controller(p , _bodyFactory, _forceLawsFactory);
+			MainWindow m = new MainWindow(c);
+//		} catch(Exception e) {
+//			System.out.println("Es el controller");
+//		}
+	}
+	
 	private static void start(String[] args) throws Exception {
-		parseArgs(args);
-		startBatchMode();
+		//parseArgs(args);
+		startGUIMode();
 	}
 
 	public static void main(String[] args) {

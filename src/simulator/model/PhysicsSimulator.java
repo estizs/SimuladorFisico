@@ -21,6 +21,14 @@ public class PhysicsSimulator {
 		bodies = new ArrayList<>();
 	}
 	
+	public PhysicsSimulator(double dt) throws IllegalArgumentException {
+		if (dt <= 0) throw new IllegalArgumentException();
+		this.dt = dt;
+		this.fl = new NewtonUniversalGravitation(6.67E-11);
+		time = 0.0;
+		bodies = new ArrayList<>();
+	}
+	
 	public void advance() {
 		// llama al método resetForce() de todos los cuerpos
 		for (Body b: bodies) b.resetForce();
@@ -83,6 +91,8 @@ public class PhysicsSimulator {
 	}
 	
 	public void addObserver(SimulatorObserver o) {
+		if (o.getClass() == ControlPanel()) System.out.println("Es que no existo");
+		else System.out.println(o);
 		observers.add(o); // no se cuando esta y cuando no (????????)
 		// Notificamos que se ha añadido un observador
 		o.onRegister(bodies, time, dt, fl.toString());

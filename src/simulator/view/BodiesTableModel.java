@@ -10,13 +10,18 @@ import simulator.model.Body;
 import simulator.model.SimulatorObserver;
 
 public class BodiesTableModel extends AbstractTableModel implements SimulatorObserver {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private List<Body> bodies;
-	private String[] columnNames;
+	private String[] columnNames = {
+			"Id", "Mass", "Position", "Velocity", "Force"	
+		};
 	
-	BodiesTableModel(Controller ctrl, String[] columnNames) {
+	BodiesTableModel(Controller ctrl) {
 		bodies = new ArrayList<>();
 		ctrl.addObserver(this);
-		this.columnNames = columnNames;
 	}
 
 	public int getRowCount() {
@@ -52,22 +57,22 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
 
 	public void onRegister(List<Body> bodies, double time, double dt, String fLawsDesc) {
 		this.bodies = bodies;
-		fireTableStructureChanged();
+		fireTableDataChanged();
 	}
 
 	public void onReset(List<Body> bodies, double time, double dt, String fLawsDesc) {
 		this.bodies = bodies;
-		fireTableStructureChanged();
+		fireTableDataChanged();
 	}
 
 	public void onBodyAdded(List<Body> bodies, Body b) {
 		this.bodies = bodies;
-		fireTableStructureChanged();
+		fireTableDataChanged();
 	}
 
 	public void onAdvance(List<Body> bodies, double time) {
 		this.bodies = bodies;
-		fireTableStructureChanged();
+		fireTableDataChanged();
 	}
 
 	public void onDeltaTimeChanged(double dt) {}

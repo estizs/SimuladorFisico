@@ -9,10 +9,13 @@ import javax.swing.JPanel;
 
 import simulator.control.Controller;
 import simulator.model.Body;
-import simulator.model.ForceLaws;
 import simulator.model.SimulatorObserver;
 
 public class StatusBar extends JPanel implements SimulatorObserver {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JLabel currTime;
 	private JLabel currLaws;
 	private JLabel numOfBodies;
