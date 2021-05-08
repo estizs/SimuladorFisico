@@ -9,6 +9,7 @@ public class ForceLawsTableModel extends AbstractTableModel  {
 	
 	public ForceLawsTableModel(String[][] fl, String[] columnNames) {
 		this.fl = fl;
+		this.columnNames = columnNames;
 	}
 
 	public int getRowCount() {

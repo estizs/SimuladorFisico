@@ -3,6 +3,7 @@ package simulator.view;
 import java.awt.BorderLayout;
 
 import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -23,19 +24,22 @@ public class MainWindow extends JFrame {
 
 	private void initGUI() {
 		JPanel mainPanel = new JPanel(new BorderLayout());
-		this.setContentPane(mainPanel);
+		setContentPane(mainPanel);
 		// Añadimos los paneles que hemos creado
 		ControlPanel controlPanel = new ControlPanel(ctrl, this);
 		mainPanel.add(controlPanel, BorderLayout.PAGE_START);
 		StatusBar statusBar = new StatusBar(ctrl);
 		mainPanel.add(statusBar, BorderLayout.PAGE_END);
-		JPanel view = new JPanel(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		JPanel centerPanel = new JPanel();
+		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+		BodiesTable table = new BodiesTable(ctrl);
+		centerPanel.add(table);
 		Viewer viewer = new Viewer(ctrl);
-		view.add(viewer);
-		mainPanel.add(view, BorderLayout.CENTER);
-		this.add(mainPanel);
-		this.setVisible(true);
-		this.pack();
+		centerPanel.add(viewer);
+		mainPanel.add(centerPanel, BorderLayout.CENTER);
+		setVisible(true);
+		pack();
+		setSize(800, 800);
 	}
 	
 	

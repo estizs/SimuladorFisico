@@ -319,7 +319,7 @@ public class Main {
 	}
 	
 	private static void startGUIMode() {
-		PhysicsSimulator p = new PhysicsSimulator(1);
+		PhysicsSimulator p = new PhysicsSimulator(2500);
 //		try {
 			Controller c = new Controller(p , _bodyFactory, _forceLawsFactory);
 			MainWindow m = new MainWindow(c);

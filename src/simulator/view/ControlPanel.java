@@ -19,9 +19,6 @@ import simulator.control.*;
 import simulator.model.*;
 
 public class ControlPanel extends JPanel implements SimulatorObserver{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private Controller ctrl;
 	private boolean stopped;
@@ -63,8 +60,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 	
 	private void initGUI() {
 		// Control panel
-		JPanel controlPanel = new JPanel();
-		controlPanel.setLayout(new BorderLayout());
+		setLayout(new BorderLayout());
 		// Tool bar
 		JToolBar toolBar = new JToolBar();
 		// Steps label
@@ -74,7 +70,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		// Delta-Time label
 		JLabel delta_time = new JLabel("Delta-Time");
 		// Delta-Time text field
-		dtField = new JTextField("2500.0");
+		initDTField();
 		
 		// BUTTONS
 		// Open button
@@ -91,11 +87,15 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		
 		// Añadimos los botones al toolBar
 		toolBar.add(open);
+		toolBar.add(new JLabel("  "));
 		toolBar.add(physics);
+		toolBar.add(new JLabel("  "));
 		toolBar.add(run);
 		toolBar.add(stop);
+		toolBar.add(new JLabel("  "));
 		toolBar.add(steps);
 		toolBar.add(spin);
+		toolBar.add(new JLabel("  "));
 		toolBar.add(delta_time);
 		toolBar.add(dtField);
 		// Añadimos el pegamento
@@ -104,7 +104,17 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		toolBar.add(exit);
 		
 		// Añadimos la toolbar
-		controlPanel.add(toolBar);
+		add(toolBar);
+		setPreferredSize(new Dimension(400, 50));
+		setMaximumSize(new Dimension(400, 50));
+		setMinimumSize(new Dimension(400, 50));
+	}
+
+	private void initDTField() {
+		dtField = new JTextField("2500.0");
+		dtField.setPreferredSize(new Dimension(60, 30));
+		dtField.setMaximumSize(new Dimension(60, 30));
+		dtField.setMinimumSize(new Dimension(60, 30));
 	}
 
 	private void run_sim(int n) {
@@ -171,7 +181,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 	}
 	
 	private String[][] getRowData(JSONObject selectedItem) {
-		String[][] data = new String[1][1];
+		String[][] data = new String[2][3];
 		JSONObject info = selectedItem.getJSONObject("data");
 		int i = 0;
 		for(String key : info.keySet()) {
@@ -236,11 +246,12 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 				JPanel selectionPanel = new JPanel();
 				selectionPanel.setLayout(new BoxLayout(selectionPanel, BoxLayout.Y_AXIS));
 				// Texto descriptivo
-				JTextArea desc = new JTextArea("Select a force law and provide values for the parameters in the Value column (default values are used for parameters with no value)");
-				desc.setLineWrap(true);
-				desc.setWrapStyleWord(true);
-				desc.setOpaque(false);
-				selectionPanel.add(desc);
+				JLabel help = new JLabel(
+		                "<html><p>Select a force law and provide values for the parametes in the <b>Value column</b> (default values are used for parametes with no value).</p></html>");
+				//desc.setLineWrap(true);
+				//desc.setWrapStyleWord(true);
+				//desc.setOpaque(false);
+				selectionPanel.add(help);
 				// Panel de selección fl
 				JPanel selection = new JPanel();
 				selection.setLayout(new FlowLayout());

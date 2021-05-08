@@ -19,6 +19,7 @@ public class PhysicsSimulator {
 		this.fl = fl;
 		time = 0.0;
 		bodies = new ArrayList<>();
+		observers = new ArrayList<>();
 	}
 	
 	public PhysicsSimulator(double dt) throws IllegalArgumentException {
@@ -27,6 +28,7 @@ public class PhysicsSimulator {
 		this.fl = new NewtonUniversalGravitation(6.67E-11);
 		time = 0.0;
 		bodies = new ArrayList<>();
+		observers = new ArrayList<>();
 	}
 	
 	public void advance() {
@@ -91,8 +93,6 @@ public class PhysicsSimulator {
 	}
 	
 	public void addObserver(SimulatorObserver o) {
-		if (o.getClass() == ControlPanel()) System.out.println("Es que no existo");
-		else System.out.println(o);
 		observers.add(o); // no se cuando esta y cuando no (????????)
 		// Notificamos que se ha añadido un observador
 		o.onRegister(bodies, time, dt, fl.toString());

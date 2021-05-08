@@ -4,6 +4,7 @@ import java.awt.FlowLayout;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -26,7 +27,7 @@ public class StatusBar extends JPanel implements SimulatorObserver {
 	}
 	
 	private void initGUI() {
-		setLayout(new FlowLayout(FlowLayout.LEFT, 0, 20)); 
+		setLayout(new FlowLayout(FlowLayout.LEFT, 60, 0)); 
 		setBorder(BorderFactory.createBevelBorder(1));
 		
 		// Creamos las etiquetas
