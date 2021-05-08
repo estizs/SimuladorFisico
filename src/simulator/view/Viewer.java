@@ -114,20 +114,20 @@ public class Viewer extends JComponent implements SimulatorObserver {
 			int x = _centerX + (int) (b.getPosition().getX() / _scale);
 			int y = _centerY - (int) (b.getPosition().getY() / _scale);
 			gr.fillOval(x, y, 5, 5);
-			gr.drawString(b.getId(), _centerX + (int) (b.getPosition().getX() / _scale), _centerY - (int) (b.getPosition().getY() / _scale) + 5);
+			gr.drawString(b.getId(), _centerX + (int) (b.getPosition().getX() / _scale) + 5, _centerY - (int) (b.getPosition().getY() / _scale) );
 		}
-		if(_showVectors) // PREGUNTA DE LOS VECTORES
+		if(_showVectors)
 			for(Body b : _bodies) {
 				int x = _centerX + (int) (b.getPosition().getX() / _scale);
 				int y = _centerY - (int) (b.getPosition().getY() / _scale);
-				drawLineWithArrow(gr, x, y, x + (int) b.getForce().getX(), y - (int) b.getForce().getY(), 2, 2, Color.GREEN, Color.GREEN);
-				drawLineWithArrow(gr, x, y, x + (int) b.getVelocity().getX(), y - (int) b.getVelocity().getY(), 2, 2, Color.RED, Color.RED);
+				drawLineWithArrow(g, x, y, x + (int) (b.getForce().direction().getX() * 20), y - (int) (b.getForce().direction().getY() * 20), 3, 3, Color.GREEN, Color.GREEN);
+				drawLineWithArrow(g, x, y, x + (int) (b.getVelocity().direction().getX() * 20), y - (int) (b.getVelocity().direction().getY() * 20), 3, 3, Color.RED, Color.RED);
 			}
 		
 		// Draw help if _showHelp is true
 		if(_showHelp) {
-			gr.drawString(SHOW_HELP_TEXT, 0, 0);
-			gr.drawString("Scaling ratio: " + _scale, 0, 10);
+			gr.drawString(SHOW_HELP_TEXT, 10, 30);
+			gr.drawString("Scaling ratio: " + _scale, 10, 45);
 		}
 	}
 	private void autoScale() {

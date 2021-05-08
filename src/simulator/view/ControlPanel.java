@@ -13,7 +13,9 @@ import java.util.Vector;
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import simulator.control.*;
 import simulator.model.*;
@@ -181,8 +183,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 	}
 	
 	private String[][] getRowData(JSONObject selectedItem) {
-		String[][] data = new String[2][3];
 		JSONObject info = selectedItem.getJSONObject("data");
+		String[][] data = new String[info.keySet().size()][3];
 		int i = 0;
 		for(String key : info.keySet()) {
 			data[i][0] = key;
@@ -246,12 +248,12 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 				JPanel selectionPanel = new JPanel();
 				selectionPanel.setLayout(new BoxLayout(selectionPanel, BoxLayout.Y_AXIS));
 				// Texto descriptivo
-				JLabel help = new JLabel(
-		                "<html><p>Select a force law and provide values for the parametes in the <b>Value column</b> (default values are used for parametes with no value).</p></html>");
-				//desc.setLineWrap(true);
-				//desc.setWrapStyleWord(true);
-				//desc.setOpaque(false);
-				selectionPanel.add(help);
+				JTextArea desc = new JTextArea(
+		                "Select a force law and provide values for the parametes in the Value column (default values are used for parametes with no value).");
+				desc.setLineWrap(true);
+				desc.setWrapStyleWord(true);
+				desc.setOpaque(false);
+				selectionPanel.add(desc);
 				// Panel de selección fl
 				JPanel selection = new JPanel();
 				selection.setLayout(new FlowLayout());
@@ -263,6 +265,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 				// Label auxiliar
 				selection.add(new JLabel("Force Laws: "));
 				selection.add(cbo);
+				selectionPanel.add(selection);
 				// Panel de botones
 				JPanel buttons = new JPanel();
 				buttons.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
@@ -272,7 +275,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 				flSelection.add(selectionPanel);
 				// Visibilidad y tamaño del cuádro de diálogo
 				flSelection.setVisible(true);
-				flSelection.setSize(600, 210);
+				flSelection.setSize(600, 250);
 				
 			}
 		});
@@ -372,13 +375,26 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		JButton ok = new JButton("OK");
 		ok.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
 				// Actualizar las ForceLaws del controller:
 				JSONObject newFl = descToJSONObject((String) cbo.getSelectedItem());
+				JSONObject data = new JSONObject();
 				for (int i = 0; i < values.getRowCount(); i++)
-					if ((String) values.getValueAt(i, 1) != "")
-						newFl.put((String) values.getValueAt(i, 0), values.getValueAt(i, 1));
+					if ((String) values.getValueAt(i, 1) != "") {
+						if ((String) values.getValueAt(i, 0) != "c")
+							data.put((String) values.getValueAt(i, 0), values.getValueAt(i, 1));
+						else {
+							JSONArray c = new JSONArray(new JSONTokener((String) values.getValueAt(i, 1)));
+							data.put((String) values.getValueAt(i, 0), c);
+							
+						}
+					}
+				newFl.put("data", data);
 				ctrl.setForceLawsInfo(newFl);
 				flSelection.dispose();
+				} catch(Exception ex) {
+					JOptionPane.showMessageDialog(null, "El valor introducido para alguno de los parámetros no es válido");
+				}
 			}
 		});
 		return ok;
