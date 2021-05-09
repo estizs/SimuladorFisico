@@ -22,15 +22,6 @@ public class PhysicsSimulator {
 		observers = new ArrayList<>();
 	}
 	
-	public PhysicsSimulator(double dt) throws IllegalArgumentException {
-		if (dt <= 0) throw new IllegalArgumentException();
-		this.dt = dt;
-		this.fl = new NewtonUniversalGravitation(6.67E-11);
-		time = 0.0;
-		bodies = new ArrayList<>();
-		observers = new ArrayList<>();
-	}
-	
 	public void advance() {
 		// llama al método resetForce() de todos los cuerpos
 		for (Body b: bodies) b.resetForce();

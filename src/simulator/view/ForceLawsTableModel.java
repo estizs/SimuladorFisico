@@ -37,4 +37,9 @@ public class ForceLawsTableModel extends AbstractTableModel  {
 	public String getColumnName(int col) {
 		return columnNames[col];
 	}
+	
+	public void update(String[][] fl) {
+		this.fl = fl;
+		fireTableDataChanged();
+	}
 }

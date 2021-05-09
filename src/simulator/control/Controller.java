@@ -33,8 +33,10 @@ public class Controller {
 		
 		JSONArray bodies = jsonInput.getJSONArray("bodies");
 		
-		for(int i = 0; i < bodies.length(); ++i)
+		for(int i = 0; i < bodies.length(); ++i) {
+			
 			simulator.addBody(bodyFactory.createInstance(bodies.getJSONObject(i)));
+		}
 	}
 	public void run(int n, OutputStream out, InputStream expOut, StateComparator cmp) throws NotEqualStatesException{
 		JSONObject expOutJo = null;
@@ -74,8 +76,7 @@ public class Controller {
 		}
 		p.println("]");
 		p.println("}");
-	}	// Como modificamos el run para que no pinte nada si estamos en el modo GUI y para que
-	// si lo haga en el BATCH (?????????????)
+	}
 	
 	public void reset() {
 		simulator.reset();

@@ -49,6 +49,7 @@ public class Main {
 	private final static String _stateComparatorDefaultValue = "epseq";
 	private final static String _outputDefaultValue = "the standard output";
 	private final static Integer _stepsDefaultValue = 150;
+	private final static String _modeDefaultValue = "batch";
 
 	// some attributes to stores values corresponding to command-line parameters
 	//
@@ -59,6 +60,7 @@ public class Main {
 	private static JSONObject _stateComparatorInfo = null;
 	private static String _outFile = null;
 	private static String _expectedOutFile = null;
+	private static String _mode = null;
 
 	// factories
 	private static Factory<Body> _bodyFactory;
@@ -97,7 +99,8 @@ public class Main {
 		CommandLineParser parser = new DefaultParser();
 		try {
 			CommandLine line = parser.parse(cmdLineOptions, args);
-
+			
+			parseModeOption(line);
 			parseHelpOption(line, cmdLineOptions);
 			parseInFileOption(line);
 			// -o, -eo, and -s 
@@ -107,7 +110,7 @@ public class Main {
 			parseDeltaTimeOption(line);
 			parseForceLawsOption(line);
 			parseStateComparatorOption(line);
-			parseModeOption(line);
+			
 
 			// if there are some remaining arguments, then something wrong is
 			// provided in the command line!
@@ -127,8 +130,7 @@ public class Main {
 	}
 
 	private static void parseModeOption(CommandLine line) {
-		// TODO Auto-generated method stub
-		
+		_mode = line.getOptionValue("m", _modeDefaultValue);
 	}
 
 	private static void parseStepsOption(CommandLine line) throws ParseException{
@@ -194,6 +196,11 @@ public class Main {
 						+ factoryPossibleValues(_stateComparatorFactory) + ". Default value: '"
 						+ _stateComparatorDefaultValue + "'.")
 				.build());
+		
+		cmdLineOptions.addOption(Option.builder("m").longOpt("mode").hasArg()
+				.desc("Execution Mode. Possible values: ’batch’(Batch mode), ’gui’ (Graphical UserInterface mode). Default value: "
+						+ "'" + _modeDefaultValue + "'.")
+				.build());
 
 		return cmdLineOptions;
 	}
@@ -225,7 +232,7 @@ public class Main {
 
 	private static void parseInFileOption(CommandLine line) throws ParseException {
 		_inFile = line.getOptionValue("i");
-		if (_inFile == null) {
+		if (_inFile == null && _mode == _modeDefaultValue) {
 			throw new ParseException("In batch mode an input file of bodies is required");
 		}
 	}
@@ -319,18 +326,23 @@ public class Main {
 	}
 	
 	private static void startGUIMode() {
-		PhysicsSimulator p = new PhysicsSimulator(2500);
-//		try {
-			Controller c = new Controller(p , _bodyFactory, _forceLawsFactory);
-			MainWindow m = new MainWindow(c);
-//		} catch(Exception e) {
-//			System.out.println("Es el controller");
-//		}
+		JSONObject defaultFl = new JSONObject();
+		defaultFl.put("type", _forceLawsDefaultValue);
+		defaultFl.put("data", new JSONObject());
+		PhysicsSimulator p = new PhysicsSimulator(_dtimeDefaultValue, _forceLawsFactory.createInstance(defaultFl));
+		Controller c = new Controller(p , _bodyFactory, _forceLawsFactory);
+		new MainWindow(c);
+		try {
+			InputStream is = new FileInputStream(new File(_inFile));
+			c.loadBodies(is);
+		} catch(Exception ex) {}
 	}
 	
 	private static void start(String[] args) throws Exception {
-		//parseArgs(args);
-		startGUIMode();
+		parseArgs(args);
+		
+		if (_mode == "batch") startBatchMode();
+		else startGUIMode();
 	}
 
 	public static void main(String[] args) {

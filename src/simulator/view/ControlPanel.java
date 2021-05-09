@@ -33,6 +33,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 	private JButton exit;
 	// La tabla con las FL
 	private JTable values;
+	// El modelo que está utilizando la tabla de las fl
+	private ForceLawsTableModel valuesModel;
 	// El spinner de los pasos
 	private JSpinner spin;
 	// La ventana para la selección de las fuerzas de gravedad
@@ -246,32 +248,37 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 				flSelection = new JDialog(window, "Force Laws Selection");
 				// Panel principal
 				JPanel selectionPanel = new JPanel();
-				selectionPanel.setLayout(new BoxLayout(selectionPanel, BoxLayout.Y_AXIS));
+				selectionPanel.setLayout(new BorderLayout());
 				// Texto descriptivo
 				JTextArea desc = new JTextArea(
 		                "Select a force law and provide values for the parametes in the Value column (default values are used for parametes with no value).");
 				desc.setLineWrap(true);
 				desc.setWrapStyleWord(true);
 				desc.setOpaque(false);
-				selectionPanel.add(desc);
+				selectionPanel.add(desc, BorderLayout.PAGE_START);
+				// Panel para el comboBox y la tabla
+				JPanel center = new JPanel();
+				center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
 				// Panel de selección fl
 				JPanel selection = new JPanel();
 				selection.setLayout(new FlowLayout());
 				// JComboBox
 				cbo = initComboBox();
 				// Tabla con valores
-				values = new JTable(new ForceLawsTableModel(getRowData(getSelectedForceLaw((String) cbo.getSelectedItem())), columnNames));
-				selectionPanel.add(new JScrollPane(values));
+				valuesModel = new ForceLawsTableModel(getRowData(getSelectedForceLaw((String) cbo.getSelectedItem())), columnNames);
+				values = new JTable(valuesModel);
+				center.add(new JScrollPane(values));
 				// Label auxiliar
 				selection.add(new JLabel("Force Laws: "));
 				selection.add(cbo);
-				selectionPanel.add(selection);
+				center.add(selection);
+				selectionPanel.add(center, BorderLayout.CENTER);
 				// Panel de botones
 				JPanel buttons = new JPanel();
 				buttons.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 				buttons.add(initCancelButton());
 				buttons.add(initOKButton());
-				selectionPanel.add(buttons);
+				selectionPanel.add(buttons, BorderLayout.PAGE_END);
 				flSelection.add(selectionPanel);
 				// Visibilidad y tamaño del cuádro de diálogo
 				flSelection.setVisible(true);
@@ -414,7 +421,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		JComboBox<String> comboBox = new JComboBox<String>(getForceLawsVector());
 		comboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				values.setModel(new ForceLawsTableModel(getRowData(getSelectedForceLaw((String) cbo.getSelectedItem())), columnNames));
+				valuesModel.update(getRowData(getSelectedForceLaw((String) cbo.getSelectedItem())));
 			}
 		});
 		return comboBox;
