@@ -191,7 +191,7 @@ public class Viewer extends JComponent implements SimulatorObserver {
 		repaint();
 	}
 	
-	public void onAdvance(List<Body> bodies, double time) { // POSIBLE ERROR DE ACTUALIZACION
+	public void onAdvance(List<Body> bodies, double time) {
 		repaint();
 	}
 

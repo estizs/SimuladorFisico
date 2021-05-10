@@ -26,7 +26,7 @@ public class ForceLawsTableModel extends AbstractTableModel  {
 	}
 	
 	public void setValueAt(Object object, int row, int col) {
-		fl[row][col] = (String) object; // POSIBLE ERROR DE CONVERSIÓN
+		fl[row][col] = (String) object; 
 		fireTableCellUpdated(row, col);
 	}
 

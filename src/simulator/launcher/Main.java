@@ -1,16 +1,11 @@
 package simulator.launcher;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-
-import javax.swing.SwingUtilities;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -22,8 +17,6 @@ import org.apache.commons.cli.ParseException;
 import org.json.JSONObject;
 
 import simulator.control.Controller;
-import simulator.control.EpsilonEqualStates;
-import simulator.control.MassEqualStates;
 import simulator.control.StateComparator;
 import simulator.factories.Factory;
 import simulator.factories.MassEqualStatesBuilder;

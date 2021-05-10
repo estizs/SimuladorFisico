@@ -84,7 +84,7 @@ public class PhysicsSimulator {
 	}
 	
 	public void addObserver(SimulatorObserver o) {
-		observers.add(o); // no se cuando esta y cuando no (????????)
+		observers.add(o);
 		// Notificamos que se ha añadido un observador
 		o.onRegister(bodies, time, dt, fl.toString());
 	}

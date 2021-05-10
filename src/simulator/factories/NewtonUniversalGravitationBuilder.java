@@ -23,7 +23,7 @@ public class NewtonUniversalGravitationBuilder extends Builder<ForceLaws> {
 	@Override
 	protected JSONObject createData() {
 		JSONObject data = new JSONObject();
-		data.put("g", "the gravitational constant (a number)"); // Antes estaba en minúscula pero ahora en mayuscula ayuda (??????????????????)
+		data.put("g", "the gravitational constant (a number)");
 		return data;
 	}
 	

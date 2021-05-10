@@ -4,7 +4,6 @@ import org.json.JSONObject;
 
 import simulator.control.EpsilonEqualStates;
 import simulator.control.StateComparator;
-import simulator.model.NewtonUniversalGravitation;
 
 public class EpsilonEqualStatesBuilder extends Builder<StateComparator> {
 	private static final String _type = "epseq";
