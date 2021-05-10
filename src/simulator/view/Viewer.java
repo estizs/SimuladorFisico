@@ -123,7 +123,7 @@ public class Viewer extends JComponent implements SimulatorObserver {
 				drawLineWithArrow(g, x, y, x + (int) (b.getForce().direction().getX() * 20), y - (int) (b.getForce().direction().getY() * 20), 3, 3, Color.GREEN, Color.GREEN);
 				drawLineWithArrow(g, x, y, x + (int) (b.getVelocity().direction().getX() * 20), y - (int) (b.getVelocity().direction().getY() * 20), 3, 3, Color.RED, Color.RED);
 			}
-		
+		gr.setColor(Color.RED);
 		// Draw help if _showHelp is true
 		if(_showHelp) {
 			gr.drawString(SHOW_HELP_TEXT, 10, 30);

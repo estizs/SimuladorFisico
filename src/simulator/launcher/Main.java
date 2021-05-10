@@ -5,7 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -318,22 +321,22 @@ public class Main {
 		}
 	}
 	
-	private static void startGUIMode() {
-		JSONObject defaultFl = new JSONObject();
-		defaultFl.put("type", _forceLawsDefaultValue);
-		defaultFl.put("data", new JSONObject());
-		PhysicsSimulator p = new PhysicsSimulator(_dtimeDefaultValue, _forceLawsFactory.createInstance(defaultFl));
-		Controller c = new Controller(p , _bodyFactory, _forceLawsFactory);
-		new MainWindow(c);
+	private static void startGUIMode() throws InvocationTargetException, InterruptedException {
+		PhysicsSimulator simulator = new PhysicsSimulator(_dtime, _forceLawsFactory.createInstance(_forceLawsInfo));
+		Controller ctlr = new Controller(simulator , _bodyFactory, _forceLawsFactory);
+		SwingUtilities.invokeAndWait(new Runnable() {
+			public void run() {
+				new MainWindow(ctlr);
+			}
+		});
 		try {
 			InputStream is = new FileInputStream(new File(_inFile));
-			c.loadBodies(is);
+			ctlr.loadBodies(is);
 		} catch(Exception ex) {}
 	}
 	
 	private static void start(String[] args) throws Exception {
 		parseArgs(args);
-		
 		if (_mode == "batch") startBatchMode();
 		else startGUIMode();
 	}
