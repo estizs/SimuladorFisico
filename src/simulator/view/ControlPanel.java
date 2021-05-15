@@ -2,20 +2,14 @@ package simulator.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import simulator.control.*;
 import simulator.model.*;
@@ -31,16 +25,11 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 	private JButton run;
 	private JButton stop;
 	private JButton exit;
-	// La tabla con las FL
-	private JTable values;
-	// El modelo que está utilizando la tabla de las fl
-	private ForceLawsTableModel valuesModel;
 	// El spinner de los pasos
 	private JSpinner spin;
 	// La ventana para la selección de las fuerzas de gravedad
-	private JDialog flSelection;
-	// El comboBox
-	private JComboBox<String> cbo;
+	private FLSelection flSelection;
+	
 	// El JTextField del delta-time
 	private JTextField dtField;
 	// Fichero de datos
@@ -50,9 +39,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 	private static final String RUN_TOOLTIP = "Ejecutar la simulación.";
 	private static final String STOP_TOOLTIP = "Parar la simulación.";
 	private static final String EXIT_TOOLTIP = "Salir de la aplicación.";
-	private static final String[] columnNames = {
-			"Key", "Value", "Description"
-	};
+	
 	
 	public ControlPanel(Controller ctrl, JFrame window) {
 		this.ctrl = ctrl;
@@ -81,6 +68,10 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 		initOpenButton();
 		// Physics button
+		// Cuadro de diálogo
+		flSelection = new FLSelection(window, ctrl);
+		// Lo mantenemos oculto
+		flSelection.setVisible(false);
 		initPhysicsButton();
 		// Run button
 		initRunButton();
@@ -176,40 +167,13 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		return b;
 	}
 	
-	private Vector<String> getForceLawsVector() {
-		List<JSONObject> infoFl = ctrl.getForceLawsInfo();
-		Vector<String> flVector = new Vector<String>();
-		for (JSONObject jo: infoFl)
-			flVector.addElement((String) jo.get("desc"));
-		return flVector;
-	}
-	
-	private String[][] getRowData(JSONObject selectedItem) {
-		JSONObject info = selectedItem.getJSONObject("data");
-		String[][] data = new String[info.keySet().size()][3];
-		int i = 0;
-		for(String key : info.keySet()) {
-			data[i][0] = key;
-			data[i][1] = "";
-			data[i][2] = info.getString(key);
-			++i;
-		}
-		return data;
-	}
-	
-	private JSONObject getSelectedForceLaw(String selectedItem) {
-		List<JSONObject> ja = ctrl.getForceLawsInfo();
-		for(JSONObject jo: ja)
-			if(selectedItem.equals(jo.getString("desc")))
-				return jo;
-		return null;
-	}
-	
 	private void disableButtons() {
 		open.setEnabled(false);
 		physics.setEnabled(false);
 		run.setEnabled(false);
 		exit.setEnabled(false);
+		spin.setEnabled(false);
+		dtField.setEnabled(false);
 	}
 	
 	private void enableButtons() {
@@ -218,6 +182,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		run.setEnabled(true);
 		exit.setEnabled(true);
 		stop.setEnabled(true);
+		spin.setEnabled(true);
+		dtField.setEnabled(true);
 	}
 	
 	private void initOpenButton() {
@@ -244,46 +210,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		physics = createButton("resources/icons/physics.png");
 		physics.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// Cuadro de diálogo
-				flSelection = new JDialog(window, "Force Laws Selection");
-				// Panel principal
-				JPanel selectionPanel = new JPanel();
-				selectionPanel.setLayout(new BorderLayout());
-				// Texto descriptivo
-				JTextArea desc = new JTextArea(
-		                "Select a force law and provide values for the parametes in the Value column (default values are used for parametes with no value).");
-				desc.setLineWrap(true);
-				desc.setWrapStyleWord(true);
-				desc.setOpaque(false);
-				selectionPanel.add(desc, BorderLayout.PAGE_START);
-				// Panel para el comboBox y la tabla
-				JPanel center = new JPanel();
-				center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
-				// Panel de selección fl
-				JPanel selection = new JPanel();
-				selection.setLayout(new FlowLayout());
-				// JComboBox
-				cbo = initComboBox();
-				// Tabla con valores
-				valuesModel = new ForceLawsTableModel(getRowData(getSelectedForceLaw((String) cbo.getSelectedItem())), columnNames);
-				values = new JTable(valuesModel);
-				center.add(new JScrollPane(values));
-				// Label auxiliar
-				selection.add(new JLabel("Force Laws: "));
-				selection.add(cbo);
-				center.add(selection);
-				selectionPanel.add(center, BorderLayout.CENTER);
-				// Panel de botones
-				JPanel buttons = new JPanel();
-				buttons.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
-				buttons.add(initCancelButton());
-				buttons.add(initOKButton());
-				selectionPanel.add(buttons, BorderLayout.PAGE_END);
-				flSelection.add(selectionPanel);
-				// Visibilidad y tamaño del cuádro de diálogo
-				flSelection.setVisible(true);
-				flSelection.setSize(600, 250);
-				
+				flSelection.showFlSelection();
 			}
 		});
 		physics.setToolTipText(PHYSICS_TOOLTIP);
@@ -319,32 +246,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		exit = createButton("resources/icons/exit.png");
 		exit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// Pedir confirmación al usuario
-				JDialog confirmacion = new JDialog(window, "Exit");
-				JPanel panelC = new JPanel();
-				panelC.setLayout(new BoxLayout(panelC, BoxLayout.Y_AXIS));
-				panelC.add(new JLabel("You're about to exit the application"));
-				panelC.add(new JLabel("Exit and close the application?"));
-				JPanel panelB = new JPanel();
-				panelB.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-				JButton ok = new JButton("OK");
-				ok.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						System.exit(0);
-					}
-				});
-				JButton cancel = new JButton("Cancel");
-				cancel.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						confirmacion.dispose();
-					}
-				});
-				panelB.add(ok);
-				panelB.add(cancel);
-				panelC.add(panelB);
-				confirmacion.add(panelC);
-				confirmacion.setVisible(true);
-				confirmacion.setBounds(window.getWidth() / 2 - 200, window.getHeight() / 2 - 50, 400, 100);
+				new ExitDialog(window);
 			}
 		});
 		exit.setToolTipText(EXIT_TOOLTIP);
@@ -356,74 +258,5 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		spin.setMaximumSize(new Dimension(60, 30));
 		spin.setMinimumSize(new Dimension(60, 30));
 		spin.setValue(10000);
-	}
-	
-	private JSONObject descToJSONObject(String desc) {
-		JSONObject forceLaws = new JSONObject();
-		String type;
-		switch (desc) {
-		case "Newton's law of universal gravitation":
-			type = "nlug";
-			break;
-		case "No Force":
-			type = "nf";
-			break;
-		case "Moving Towards Fixed Point Force Law":
-			type = "mtfp";
-			break;
-		default:
-			type = null;
-		}
-		forceLaws.put("type", type);
-		return forceLaws;
-	}
-	
-	private JButton initOKButton() {
-		JButton ok = new JButton("OK");
-		ok.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-				// Actualizar las ForceLaws del controller:
-				JSONObject newFl = descToJSONObject((String) cbo.getSelectedItem());
-				JSONObject data = new JSONObject();
-				for (int i = 0; i < values.getRowCount(); i++)
-					if ((String) values.getValueAt(i, 1) != "") {
-						if ((String) values.getValueAt(i, 0) != "c")
-							data.put((String) values.getValueAt(i, 0), values.getValueAt(i, 1));
-						else {
-							JSONArray c = new JSONArray(new JSONTokener((String) values.getValueAt(i, 1)));
-							data.put((String) values.getValueAt(i, 0), c);
-							
-						}
-					}
-				newFl.put("data", data);
-				ctrl.setForceLawsInfo(newFl);
-				flSelection.dispose();
-				} catch(Exception ex) {
-					JOptionPane.showMessageDialog(null, "El valor introducido para alguno de los parámetros no es válido");
-				}
-			}
-		});
-		return ok;
-	}
-	
-	private JButton initCancelButton() {
-		JButton cancel = new JButton("Cancel");
-		cancel.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				flSelection.dispose();
-			}
-		});
-		return cancel;
-	}
-	
-	private JComboBox<String> initComboBox() {
-		JComboBox<String> comboBox = new JComboBox<String>(getForceLawsVector());
-		comboBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				valuesModel.update(getRowData(getSelectedForceLaw((String) cbo.getSelectedItem())));
-			}
-		});
-		return comboBox;
 	}
 }

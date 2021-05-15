@@ -2,6 +2,8 @@ package simulator.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -34,16 +36,27 @@ public class MainWindow extends JFrame {
 		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 		BodiesTable table = new BodiesTable(ctrl);
 		table.setPreferredSize(new Dimension(800, 200));
-		table.setMaximumSize(new Dimension(800, 200));
-		table.setMinimumSize(new Dimension(800, 200));
 		centerPanel.add(table);
 		Viewer viewer = new Viewer(ctrl);
+		viewer.setPreferredSize(new Dimension(800, 300));
 		centerPanel.add(viewer);
 		mainPanel.add(centerPanel, BorderLayout.CENTER);
 		setVisible(true);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setOperationOnClose();
 		pack();
 		setSize(800, 800);
 	}
 	
+	private void setOperationOnClose() {
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent we) {
+				initExitDialog();
+			}
+		});
+	}
 	
+	private void initExitDialog() {
+		new ExitDialog(this);
+	}
 }

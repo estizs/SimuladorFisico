@@ -1,5 +1,6 @@
 package simulator.view;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.List;
 
@@ -26,13 +27,16 @@ public class StatusBar extends JPanel implements SimulatorObserver {
 	}
 	
 	private void initGUI() {
-		setLayout(new FlowLayout(FlowLayout.LEFT, 60, 0)); 
+		setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0)); 
 		setBorder(BorderFactory.createBevelBorder(1));
 		
 		// Creamos las etiquetas
 		currTime = new JLabel("Time: ");
+		currTime.setPreferredSize(new Dimension(150, 30));
 		numOfBodies = new JLabel("Bodies: ");
+		numOfBodies.setPreferredSize(new Dimension(150, 30));
 		currLaws = new JLabel("Laws: ");
+		currLaws.setPreferredSize(new Dimension(400, 30));
 		
 		// Añadimos las etiquetas al panel
 		add(currTime);
