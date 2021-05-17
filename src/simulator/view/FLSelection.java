@@ -26,9 +26,6 @@ import org.json.JSONTokener;
 import simulator.control.Controller;
 
 public class FLSelection extends JDialog {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	// El modelo de la tabla de parámetros de las ForceLaws
 	private ForceLawsTableModel valuesModel;
@@ -94,23 +91,21 @@ public class FLSelection extends JDialog {
 		ok.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-				// Actualizar las ForceLaws del controller:
-				JSONObject newFl = descToJSONObject((String) cbo.getSelectedItem());
-				JSONObject data = new JSONObject();
-				for (int i = 0; i < values.getRowCount(); i++)
-					if ((String) values.getValueAt(i, 1) != "") {
-						if ((String) values.getValueAt(i, 0) != "c") 
-							data.put((String) values.getValueAt(i, 0), Double.parseDouble((String) values.getValueAt(i, 1)));
-						else {
-							JSONArray c = new JSONArray(new JSONTokener((String) values.getValueAt(i, 1)));
-							data.put((String) values.getValueAt(i, 0), c);
-							
+					// Actualizar las ForceLaws del controller:
+					JSONObject newFl = descToJSONObject(cbo.getSelectedIndex());
+					JSONObject data = new JSONObject();
+					for (int i = 0; i < values.getRowCount(); i++)
+						if (!((String) values.getValueAt(i, 1)).equals("")) {
+							if ((String) values.getValueAt(i, 0) != "c") 
+								data.put((String) values.getValueAt(i, 0), Double.parseDouble((String) values.getValueAt(i, 1)));
+							else {
+								JSONArray c = new JSONArray(new JSONTokener((String) values.getValueAt(i, 1)));
+								data.put((String) values.getValueAt(i, 0), c);
+							}
 						}
-					}
-				newFl.put("data", data);
-				System.out.println(newFl);
-				ctrl.setForceLawsInfo(newFl);
-				hideFlSelection();
+					newFl.put("data", data);
+					ctrl.setForceLawsInfo(newFl);
+					hideFlSelection();
 				} catch(Exception ex) {
 					JOptionPane.showMessageDialog(null, "El valor introducido para alguno de los parámetros no es válido");
 				}
@@ -119,24 +114,9 @@ public class FLSelection extends JDialog {
 		return ok;
 	}
 	
-	private JSONObject descToJSONObject(String desc) {
-		JSONObject forceLaws = new JSONObject();
-		String type;
-		switch (desc) {
-		case "Newton's law of universal gravitation":
-			type = "nlug";
-			break;
-		case "No Force":
-			type = "nf";
-			break;
-		case "Moving Towards Fixed Point Force Law":
-			type = "mtfp";
-			break;
-		default:
-			type = null;
-		}
-		forceLaws.put("type", type);
-		return forceLaws;
+	private JSONObject descToJSONObject(int index) {
+		List<JSONObject> l = ctrl.getForceLawsInfo();
+		return l.get(index);
 	}
 	
 	private JButton initCancelButton() {
@@ -190,11 +170,9 @@ public class FLSelection extends JDialog {
 	
 	public void showFlSelection() {
 		setVisible(true);
-		setModal(true);
 	}
 	
 	public void hideFlSelection() {
-		setVisible(false);
 		setVisible(false);
 	}
 }

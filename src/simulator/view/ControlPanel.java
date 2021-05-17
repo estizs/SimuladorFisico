@@ -237,6 +237,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver{
 		stop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				stopped = true;
+				enableButtons();
 			}
 		});
 		stop.setToolTipText(STOP_TOOLTIP);
