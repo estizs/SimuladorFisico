@@ -228,7 +228,7 @@ public class Main {
 
 	private static void parseInFileOption(CommandLine line) throws ParseException {
 		_inFile = line.getOptionValue("i");
-		if (_inFile == null && _mode == _modeDefaultValue) {
+		if (_inFile == null && _mode.equals(_modeDefaultValue)) {
 			throw new ParseException("In batch mode an input file of bodies is required");
 		}
 	}
@@ -337,7 +337,7 @@ public class Main {
 	
 	private static void start(String[] args) throws Exception {
 		parseArgs(args);
-		if (_mode == "batch") startBatchMode();
+		if (_mode.equals("batch")) startBatchMode();
 		else startGUIMode();
 	}
 
